@@ -760,7 +760,7 @@
                 return `
                         <tr>
                             <td width="${iconSize + 6}" style="vertical-align: top; padding-top: 2px;">
-                                <img src="${iconUrl}" width="${iconSize}" height="${iconSize}" alt="${iconAlt}" style="display: block; ${iconBgStyle} border: 0; outline: none; text-decoration: none;">
+                                <img src="${iconUrl}" width="${iconSize}" height="${iconSize}" alt="${iconAlt}" style="display: block; ${iconBgStyle} border: 0; outline: none; text-decoration: none !important; border-bottom: 0 !important;">
                             </td>
                             <td style="vertical-align: top; padding-bottom: ${paddingBottom}px; color: ${textColor}; font-family: ${fontFamily};">${contentHtml}</td>
                         </tr>`;
@@ -783,7 +783,20 @@
             if (!showIcon) return contentHtml;
 
             const iconBgStyle = `background-color: ${activeColor}; border-radius: 3px;`;
-            return `<img src="${iconUrl}" width="${iconSize}" height="${iconSize}" alt="${iconAlt}" style="display: inline-block; vertical-align: -2px; ${iconBgStyle} border: 0; outline: none; text-decoration: none;">&nbsp;${contentHtml}`;
+            return `<img src="${iconUrl}" width="${iconSize}" height="${iconSize}" alt="${iconAlt}" style="display: inline-block; vertical-align: -2px; ${iconBgStyle} border: 0; outline: none; text-decoration: none !important; border-bottom: 0 !important;">&nbsp;${contentHtml}`;
+        }
+
+        function buildSignatureGreeting(fontFamily) {
+            return `
+<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; font-family: ${fontFamily}; color: #000000;">
+    <tbody>
+        <tr><td style="font-size: 14px; line-height: 20px;">&nbsp;</td></tr>
+        <tr><td style="font-size: 14px; line-height: 20px;">&nbsp;</td></tr>
+        <tr><td style="font-size: 14px; line-height: 20px; font-family: ${fontFamily};">Met vriendelijke groeten</td></tr>
+        <tr><td style="font-size: 14px; line-height: 20px;">&nbsp;</td></tr>
+        <tr><td style="font-size: 14px; line-height: 20px;">&nbsp;</td></tr>
+    </tbody>
+</table>`;
         }
 
         // --- 3. DE TEMPLATE GENERATOR ---
@@ -879,7 +892,7 @@
 
             if (socialIconsArr.length > 0) {
                 const tdString = socialIconsArr.map(s => 
-                    `<td style="padding-right: 6px;"><a href="${s.url}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block;"><img src="${s.icon}" width="24" height="24" alt="${s.alt}" style="display: block; background-color: ${activeColor}; border-radius: 4px; border: 0; outline: none; text-decoration: none;"></a></td>`
+                    `<td style="padding-right: 6px;"><a href="${s.url}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; display: inline-block;"><img src="${s.icon}" width="24" height="24" alt="${s.alt}" style="display: block; background-color: ${activeColor}; border-radius: 4px; border: 0; outline: none; text-decoration: none !important; border-bottom: 0 !important;"></a></td>`
                 ).join('');
 
                 socialHtml = `
@@ -902,7 +915,7 @@
                 <table cellpadding="0" cellspacing="0" border="0" style="margin-top: 12px;">
                     <tr>
                         <td align="center" style="background-color: ${activeColor}; border-radius: 4px; padding: 6px 12px;">
-                            <a href="${apptLink}" target="_blank" rel="noopener noreferrer" style="color: #ffffff; font-family: ${activeFont}; font-size: 13px; font-weight: bold; text-decoration: none; display: inline-block; line-height: 16px;">${apptText}</a>
+                            <a href="${apptLink}" target="_blank" rel="noopener noreferrer" style="color: #ffffff; font-family: ${activeFont}; font-size: 13px; font-weight: bold; text-decoration: none !important; border-bottom: 0 !important; display: inline-block; line-height: 16px;">${apptText}</a>
                         </td>
                     </tr>
                 </table>
@@ -918,7 +931,7 @@
                 if (validPhones.length > 0) {
                     phoneHtmlT1 = validPhones.map(p => {
                         const labelHtml = p.label ? `<strong style="font-weight: 600; font-family: ${activeFont};">${p.label}:&nbsp;</strong>` : '';
-                        return `${labelHtml}<a href="tel:${p.href}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
+                        return `${labelHtml}<a href="tel:${p.href}" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
                     }).join('<br>');
                 }
 
@@ -944,19 +957,19 @@
                 <table cellpadding="0" cellspacing="0" border="0" style="font-size: 14px; font-family: ${activeFont}; line-height: 1.5;">
                     <tbody>
                         <tr>
-                            <td width="24" style="vertical-align: top; padding-top: 2px;"><img src="${icons.phone}" width="18" height="18" alt="tel" style="display: block; background-color: ${activeColor}; border-radius: 3px; border: 0; outline: none; text-decoration: none;"></td>
+                            <td width="24" style="vertical-align: top; padding-top: 2px;"><img src="${icons.phone}" width="18" height="18" alt="tel" style="display: block; background-color: ${activeColor}; border-radius: 3px; border: 0; outline: none; text-decoration: none !important; border-bottom: 0 !important;"></td>
                             <td style="vertical-align: top; padding-bottom: 4px; color: #000000; font-family: ${activeFont};">${phoneHtmlT1}</td>
                         </tr>
                         <tr>
-                            <td width="24" style="vertical-align: top; padding-top: 2px;"><img src="${icons.email}" width="18" height="18" alt="mail" style="display: block; background-color: ${activeColor}; border-radius: 3px; border: 0; outline: none; text-decoration: none;"></td>
-                            <td style="vertical-align: top; padding-bottom: 4px; font-family: ${activeFont};"><a href="mailto:${mail}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${mail}</a></td>
+                            <td width="24" style="vertical-align: top; padding-top: 2px;"><img src="${icons.email}" width="18" height="18" alt="mail" style="display: block; background-color: ${activeColor}; border-radius: 3px; border: 0; outline: none; text-decoration: none !important; border-bottom: 0 !important;"></td>
+                            <td style="vertical-align: top; padding-bottom: 4px; font-family: ${activeFont};"><a href="mailto:${mail}" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont};">${mail}</a></td>
                         </tr>
                         <tr>
-                            <td width="24" style="vertical-align: top; padding-top: 2px;"><img src="${icons.website}" width="18" height="18" alt="web" style="display: block; background-color: ${activeColor}; border-radius: 3px; border: 0; outline: none; text-decoration: none;"></td>
-                            <td style="vertical-align: top; padding-bottom: 4px; font-family: ${activeFont};"><a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${schoolWebsiteLabel}</a></td>
+                            <td width="24" style="vertical-align: top; padding-top: 2px;"><img src="${icons.website}" width="18" height="18" alt="web" style="display: block; background-color: ${activeColor}; border-radius: 3px; border: 0; outline: none; text-decoration: none !important; border-bottom: 0 !important;"></td>
+                            <td style="vertical-align: top; padding-bottom: 4px; font-family: ${activeFont};"><a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont};">${schoolWebsiteLabel}</a></td>
                         </tr>
                         <tr>
-                            <td width="24" style="vertical-align: top; padding-top: 2px;"><img src="${icons.address}" width="18" height="18" alt="adres" style="display: block; background-color: ${activeColor}; border-radius: 3px; border: 0; outline: none; text-decoration: none;"></td>
+                            <td width="24" style="vertical-align: top; padding-top: 2px;"><img src="${icons.address}" width="18" height="18" alt="adres" style="display: block; background-color: ${activeColor}; border-radius: 3px; border: 0; outline: none; text-decoration: none !important; border-bottom: 0 !important;"></td>
                             <td style="vertical-align: top; color: #000000; font-family: ${activeFont};">${school.address}</td>
                         </tr>
                     </tbody>
@@ -968,8 +981,8 @@
         <tr><td colspan="3" height="15" style="font-size: 15px; line-height: 15px;">&nbsp;</td></tr>
         <tr>
             <td colspan="3" align="${logoAlignmentAttr}" style="text-align: ${logoAlignmentAttr};">
-                <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block; border: none; outline: none;">
-                    <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
+                <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; display: inline-block; border: none; outline: none;">
+                    <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none !important; border-bottom: 0 !important;">
                 </a>
             </td>
         </tr>
@@ -983,7 +996,7 @@
                 if (validPhones.length > 0) {
                     phoneHtmlT2 = validPhones.map(p => {
                         const labelText = p.label ? `<span style="color: ${activeColor}; font-weight: bold;">${p.label} </span>` : '';
-                        return `${labelText}<a href="tel:${p.href}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
+                        return `${labelText}<a href="tel:${p.href}" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
                     }).join('<br>');
                 }
                 const phoneRowT2 = buildContactRowWithOptionalIcon({
@@ -1003,7 +1016,7 @@
                     iconAlt: 'mail',
                     iconSize: 16,
                     activeColor,
-                    contentHtml: `<a href="mailto:${mail}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${mail}</a>`,
+                    contentHtml: `<a href="mailto:${mail}" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont};">${mail}</a>`,
                     fontFamily: activeFont,
                     textColor: '#000000',
                     paddingBottom: 2
@@ -1014,7 +1027,7 @@
                     iconAlt: 'web',
                     iconSize: 16,
                     activeColor,
-                    contentHtml: `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: ${activeColor}; font-family: ${activeFont}; font-weight: bold;">Naar de website &rarr;</a>`,
+                    contentHtml: `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; color: ${activeColor}; font-family: ${activeFont}; font-weight: bold;">Naar de website &rarr;</a>`,
                     fontFamily: activeFont,
                     textColor: '#000000',
                     paddingBottom: 0
@@ -1026,8 +1039,8 @@
         <tr>
             <!-- Logo Kolom -->
             <td align="${logoAlignmentAttr}" style="vertical-align: middle; padding-right: 20px; text-align: ${logoAlignmentAttr};">
-                <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block; border: none; outline: none;">
-                    <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
+                <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; display: inline-block; border: none; outline: none;">
+                    <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none !important; border-bottom: 0 !important;">
                 </a>
             </td>
             
@@ -1062,7 +1075,7 @@
                 if (validPhones.length > 0) {
                     phoneInlineHtml = validPhones.map(p => {
                         const labelText = p.label ? ` (${p.label})` : '';
-                        return `<a href="tel:${p.href}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}${labelText}</a>`;
+                        return `<a href="tel:${p.href}" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont};">${p.num}${labelText}</a>`;
                     }).join(` <span style="color: ${activeColor}; font-weight: bold; margin: 0 4px;">&bull;</span> `);
                 }
                 const phoneItemT3 = buildInlineContactItemWithOptionalIcon({
@@ -1079,7 +1092,7 @@
                     iconAlt: 'mail',
                     iconSize: 14,
                     activeColor,
-                    contentHtml: `<a href="mailto:${mail}" style="color: #000000; text-decoration: none; font-family: ${activeFont};">${mail}</a>`
+                    contentHtml: `<a href="mailto:${mail}" style="color: #000000; text-decoration: none !important; border-bottom: 0 !important; font-family: ${activeFont};">${mail}</a>`
                 });
                 const websiteItemT3 = buildInlineContactItemWithOptionalIcon({
                     showIcon: showLinkContactIcon,
@@ -1087,7 +1100,7 @@
                     iconAlt: 'web',
                     iconSize: 14,
                     activeColor,
-                    contentHtml: `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="color: #000000; text-decoration: none; font-family: ${activeFont};">${schoolWebsiteLabel}</a>`
+                    contentHtml: `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="color: #000000; text-decoration: none !important; border-bottom: 0 !important; font-family: ${activeFont};">${schoolWebsiteLabel}</a>`
                 });
 
                 htmlString = `
@@ -1114,7 +1127,7 @@
         ${apptLink ? `
         <tr>
             <td style="padding-bottom: 12px; font-family: ${activeFont};">
-                <a href="${apptLink}" target="_blank" rel="noopener noreferrer" style="background-color: ${activeColor}; color: #ffffff; padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; text-decoration: none; display: inline-block;">${apptText}</a>
+                <a href="${apptLink}" target="_blank" rel="noopener noreferrer" style="background-color: ${activeColor}; color: #ffffff; padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; text-decoration: none !important; border-bottom: 0 !important; display: inline-block;">${apptText}</a>
             </td>
         </tr>
         ` : ''}
@@ -1131,8 +1144,8 @@
         <!-- Logo en KBO -->
         <tr>
             <td align="${logoAlignmentAttr}" style="padding-top: 4px; font-family: ${activeFont}; text-align: ${logoAlignmentAttr};">
-                <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block; border: none; outline: none;">
-                    <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
+                <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; display: inline-block; border: none; outline: none;">
+                    <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none !important; border-bottom: 0 !important;">
                 </a>
                 ${enterpriseHtml}
             </td>
@@ -1146,7 +1159,7 @@
                 if (validPhones.length > 0) {
                     phoneHtmlT4 = validPhones.map(p => {
                         const labelText = p.label ? `<span style="color: ${activeColor}; font-weight: bold;">${p.label} </span>` : '';
-                        return `${labelText}<a href="tel:${p.href}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
+                        return `${labelText}<a href="tel:${p.href}" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
                     }).join('<br>');
                 }
                 const phoneRowT4 = buildContactRowWithOptionalIcon({
@@ -1166,7 +1179,7 @@
                     iconAlt: 'mail',
                     iconSize: 16,
                     activeColor,
-                    contentHtml: `<a href="mailto:${mail}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${mail}</a>`,
+                    contentHtml: `<a href="mailto:${mail}" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont};">${mail}</a>`,
                     fontFamily: activeFont,
                     textColor: '#000000',
                     paddingBottom: 2
@@ -1177,7 +1190,7 @@
                     iconAlt: 'web',
                     iconSize: 16,
                     activeColor,
-                    contentHtml: `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: ${activeColor}; font-family: ${activeFont}; font-weight: bold;">Naar de website &rarr;</a>`,
+                    contentHtml: `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; color: ${activeColor}; font-family: ${activeFont}; font-weight: bold;">Naar de website &rarr;</a>`,
                     fontFamily: activeFont,
                     textColor: '#000000',
                     paddingBottom: 0
@@ -1210,8 +1223,8 @@
             
             <!-- Logo Kolom (Rechts) -->
             <td align="${logoAlignmentAttr}" style="vertical-align: middle; padding-left: 20px; text-align: ${logoAlignmentAttr};">
-                <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block; border: none; outline: none;">
-                    <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
+                <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; display: inline-block; border: none; outline: none;">
+                    <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none !important; border-bottom: 0 !important;">
                 </a>
             </td>
         </tr>
@@ -1225,7 +1238,7 @@
                 if (validPhones.length > 0) {
                     phoneInlineHtmlT5 = validPhones.map(p => {
                         const labelText = p.label ? ` (${p.label})` : '';
-                        return `<a href="tel:${p.href}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}${labelText}</a>`;
+                        return `<a href="tel:${p.href}" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont};">${p.num}${labelText}</a>`;
                     }).join(` <span style="color: ${activeColor}; font-weight: bold; margin: 0 6px;">|</span> `);
                 }
                 const phoneItemT5 = buildInlineContactItemWithOptionalIcon({
@@ -1242,7 +1255,7 @@
                     iconAlt: 'mail',
                     iconSize: 14,
                     activeColor,
-                    contentHtml: `<a href="mailto:${mail}" style="color: #000000; text-decoration: none; font-family: ${activeFont};">${mail}</a>`
+                    contentHtml: `<a href="mailto:${mail}" style="color: #000000; text-decoration: none !important; border-bottom: 0 !important; font-family: ${activeFont};">${mail}</a>`
                 });
                 const websiteItemT5 = buildInlineContactItemWithOptionalIcon({
                     showIcon: showLinkContactIcon,
@@ -1250,14 +1263,14 @@
                     iconAlt: 'web',
                     iconSize: 14,
                     activeColor,
-                    contentHtml: `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="color: #000000; text-decoration: none; font-family: ${activeFont};">${schoolWebsiteLabel}</a>`
+                    contentHtml: `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="color: #000000; text-decoration: none !important; border-bottom: 0 !important; font-family: ${activeFont};">${schoolWebsiteLabel}</a>`
                 });
 
                 const appointmentHtmlT5 = apptLink ? `
                     <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin-top: 12px; margin-bottom: 4px;">
                         <tr>
                             <td align="center" style="background-color: ${activeColor}; border-radius: 4px; padding: 6px 16px;">
-                                <a href="${apptLink}" target="_blank" rel="noopener noreferrer" style="color: #ffffff; font-family: ${activeFont}; font-size: 13px; font-weight: bold; text-decoration: none; display: inline-block; line-height: 16px;">${apptText}</a>
+                                <a href="${apptLink}" target="_blank" rel="noopener noreferrer" style="color: #ffffff; font-family: ${activeFont}; font-size: 13px; font-weight: bold; text-decoration: none !important; border-bottom: 0 !important; display: inline-block; line-height: 16px;">${apptText}</a>
                             </td>
                         </tr>
                     </table>
@@ -1271,8 +1284,8 @@
         <!-- Logo Top -->
         <tr>
             <td align="${logoAlignmentAttr}" style="padding-bottom: 12px; text-align: ${logoAlignmentAttr};">
-                <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block; border: none; outline: none;">
-                    <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
+                <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; display: inline-block; border: none; outline: none;">
+                    <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none !important; border-bottom: 0 !important;">
                 </a>
             </td>
         </tr>
@@ -1320,7 +1333,7 @@
                 let phoneHtmlT6 = `<span style="color: #000000; font-size: 13px; font-family: ${activeFont};">000 00 00 00</span>`;
                 if (validPhones.length > 0) {
                     phoneHtmlT6 = validPhones.map(p => {
-                        return `<a href="tel:${p.href}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
+                        return `<a href="tel:${p.href}" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
                     }).join('<br>');
                 }
                 const phoneRowT6 = buildContactRowWithOptionalIcon({
@@ -1340,7 +1353,7 @@
                     iconAlt: 'mail',
                     iconSize: 16,
                     activeColor,
-                    contentHtml: `<a href="mailto:${mail}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${mail}</a>`,
+                    contentHtml: `<a href="mailto:${mail}" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont};">${mail}</a>`,
                     fontFamily: activeFont,
                     textColor: '#000000',
                     paddingBottom: 2
@@ -1351,7 +1364,7 @@
                     iconAlt: 'web',
                     iconSize: 16,
                     activeColor,
-                    contentHtml: `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${schoolWebsiteLabel}</a>`,
+                    contentHtml: `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont};">${schoolWebsiteLabel}</a>`,
                     fontFamily: activeFont,
                     textColor: '#000000',
                     paddingBottom: 2
@@ -1378,7 +1391,7 @@
                     <tr>
                         <!-- Avatar / Foto -->
                         <td width="${avatarWidth}" style="vertical-align: middle; padding-right: 15px;">
-                            <img src="${avatarUrl}" alt="Profielfoto" width="${avatarWidth}" style="display: block; border-radius: 50%; width: ${avatarWidth}px; height: auto; border: none; outline: none; text-decoration: none;">
+                            <img src="${avatarUrl}" alt="Profielfoto" width="${avatarWidth}" style="display: block; border-radius: 50%; width: ${avatarWidth}px; height: auto; border: none; outline: none; text-decoration: none !important; border-bottom: 0 !important;">
                         </td>
                         <!-- Naam & Functie -->
                         <td style="vertical-align: middle; padding-right: 15px; font-family: ${activeFont};">
@@ -1413,8 +1426,8 @@
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
                         <td align="${logoAlignmentAttr}" style="vertical-align: middle; text-align: ${logoAlignmentAttr};">
-                            <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block; border: none; outline: none;">
-                                <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
+                            <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; display: inline-block; border: none; outline: none;">
+                                <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none !important; border-bottom: 0 !important;">
                             </a>
                             ${enterpriseHtml}
                             ${appointmentHtml}
@@ -1430,7 +1443,8 @@
 </table>`;
             }
             
-            previewContainer.innerHTML = htmlString;
+            const greetingHtml = buildSignatureGreeting(activeFont);
+            previewContainer.innerHTML = `${greetingHtml}${htmlString}`;
         }
 
         // --- 4. EVENT LISTENERS ---
@@ -1521,7 +1535,7 @@
         document.getElementById('copyBtn').addEventListener('click', function() {
             const previewContent = document.getElementById('signaturePreview');
             const range = document.createRange();
-            range.selectNode(previewContent.firstElementChild);
+            range.selectNodeContents(previewContent);
             window.getSelection().removeAllRanges(); 
             window.getSelection().addRange(range);   
             
