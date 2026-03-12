@@ -389,8 +389,9 @@
 
     <script>
         // --- 0. BASIS INSTELLINGEN ---
-        // Pas deze variabele aan wanneer de tool op een live server staat (bijv. 'https://assets.sgfv.be')
-        const ASSET_BASE_URL = 'http://127.0.0.1:5500/assets';
+        // Gebruik altijd HTTPS voor assets om mixed-content en delivery issues te vermijden.
+        // Zet dit op het publieke HTTPS assetpad dat in e-mails bereikbaar is.
+        const ASSET_BASE_URL = 'https://assets.sgfv.be';
 
         // --- 1. CONFIGURATIE VAN DE SCHOLEN ---
         // Data exact overgenomen uit de SGFV Cheat Sheet (Versie 3.0)
@@ -693,6 +694,48 @@
             document.getElementById('enterpriseNum').placeholder = "Bv. BE 0446.162.881";
         }
 
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function normalizeHttpsUrl(value) {
+            const trimmed = String(value ?? '').trim();
+            if (!trimmed) return '';
+
+            let candidate = trimmed;
+            if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(candidate)) {
+                candidate = `https://${candidate}`;
+            }
+
+            try {
+                const parsed = new URL(candidate);
+                if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return '';
+                parsed.protocol = 'https:';
+                return parsed.toString();
+            } catch {
+                return '';
+            }
+        }
+
+        function sanitizeEmail(value) {
+            const trimmed = String(value ?? '').trim();
+            const emailRegex = /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+            return emailRegex.test(trimmed) ? trimmed : '';
+        }
+
+        function sanitizeTel(value) {
+            const compact = String(value ?? '').replace(/[^\d+]/g, '');
+            if (!compact) return '';
+            if ((compact.match(/\+/g) || []).length > 1) return '';
+            if (compact.includes('+') && !compact.startsWith('+')) return '';
+            return compact;
+        }
+
         function buildContactRowWithOptionalIcon({
             showIcon,
             iconUrl,
@@ -770,30 +813,35 @@
             const showLinkContactIcon = showContactIcons;
             const showMailContactIcon = showContactIcons;
 
-            // Haal gebruikersdata op
-            const fName = document.getElementById('firstName').value || 'Voornaam';
-            const lName = document.getElementById('lastName').value || 'Achternaam';
-            const job = document.getElementById('jobTitle').value || 'Functie / Titel';
-            const dept = document.getElementById('department').value.trim();
-            const mail = document.getElementById('email').value || 'email@sgfv.be';
-            
-            // Ophalen van Social Media velden
-            const sFb = document.getElementById('socialFacebook').value.trim();
-            const sIg = document.getElementById('socialInstagram').value.trim();
-            const sLi = document.getElementById('socialLinkedin').value.trim();
-            const sX = document.getElementById('socialX').value.trim();
-            const sWa = document.getElementById('socialWhatsapp').value.trim();
+            // Haal gebruikersdata op (geschoond voor veilige HTML output)
+            const fName = escapeHtml(document.getElementById('firstName').value.trim() || 'Voornaam');
+            const lName = escapeHtml(document.getElementById('lastName').value.trim() || 'Achternaam');
+            const job = escapeHtml(document.getElementById('jobTitle').value.trim() || 'Functie / Titel');
+            const dept = escapeHtml(document.getElementById('department').value.trim());
+
+            const mailInput = document.getElementById('email').value;
+            const mail = sanitizeEmail(mailInput) || 'email@sgfv.be';
+
+            const schoolWebsiteUrl = normalizeHttpsUrl(school.website) || 'https://www.sgfv.be';
+            const schoolWebsiteLabel = escapeHtml(school.website);
+
+            // Ophalen van Social Media velden (alleen geldige HTTPS links)
+            const sFb = normalizeHttpsUrl(document.getElementById('socialFacebook').value);
+            const sIg = normalizeHttpsUrl(document.getElementById('socialInstagram').value);
+            const sLi = normalizeHttpsUrl(document.getElementById('socialLinkedin').value);
+            const sX = normalizeHttpsUrl(document.getElementById('socialX').value);
+            const sWa = normalizeHttpsUrl(document.getElementById('socialWhatsapp').value);
 
             // Extra velden
-            const apptLink = document.getElementById('appointmentLink').value.trim();
-            const apptText = document.getElementById('appointmentText').value.trim() || 'Boek een afspraak'; 
-            const entNum = document.getElementById('enterpriseNum').value.trim();
+            const apptLink = normalizeHttpsUrl(document.getElementById('appointmentLink').value);
+            const apptText = escapeHtml(document.getElementById('appointmentText').value.trim() || 'Boek een afspraak');
+            const entNum = escapeHtml(document.getElementById('enterpriseNum').value.trim());
             
             // Haal de ingestelde afbeeldingen en groottes op
-            const mainLogoUrl = mainLogoSelect.value || school.logos[0].url;
+            const mainLogoUrl = normalizeHttpsUrl(mainLogoSelect.value) || normalizeHttpsUrl(school.logos[0].url) || '';
             const logoWidth = logoSizeInput.value || 160;
             
-            const avatarUrl = avatarSelect.value || school.avatars[0].url;
+            const avatarUrl = normalizeHttpsUrl(avatarSelect.value) || normalizeHttpsUrl(school.avatars[0].url) || mainLogoUrl;
             const avatarWidth = avatarSizeInput.value || 90;
             
             // Formatteer afdeling/locatie
@@ -801,12 +849,14 @@
             
             // Logica voor telefoons
             const phoneRows = document.querySelectorAll('.phone-row');
-            let validPhones = [];
+            const validPhones = [];
             
             phoneRows.forEach(row => {
-                const label = row.querySelector('.phone-label').value.trim();
-                const num = row.querySelector('.phone-number').value.trim();
-                if (num) validPhones.push({ label, num });
+                const label = escapeHtml(row.querySelector('.phone-label').value.trim());
+                const numRaw = row.querySelector('.phone-number').value.trim();
+                const hrefNum = sanitizeTel(numRaw);
+                const displayNum = escapeHtml(numRaw);
+                if (hrefNum && displayNum) validPhones.push({ label, num: displayNum, href: hrefNum });
             });
 
             // Opbouwen array met aanwezige socials
@@ -822,7 +872,7 @@
 
             if (socialIconsArr.length > 0) {
                 const tdString = socialIconsArr.map(s => 
-                    `<td style="padding-right: 6px;"><a href="${s.url}" target="_blank" style="text-decoration: none; display: inline-block;"><img src="${s.icon}" width="24" height="24" alt="${s.alt}" style="display: block; background-color: ${activeColor}; border-radius: 4px; border: 0; outline: none; text-decoration: none;"></a></td>`
+                    `<td style="padding-right: 6px;"><a href="${s.url}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block;"><img src="${s.icon}" width="24" height="24" alt="${s.alt}" style="display: block; background-color: ${activeColor}; border-radius: 4px; border: 0; outline: none; text-decoration: none;"></a></td>`
                 ).join('');
 
                 socialHtml = `
@@ -845,7 +895,7 @@
                 <table cellpadding="0" cellspacing="0" border="0" style="margin-top: 12px;">
                     <tr>
                         <td align="center" style="background-color: ${activeColor}; border-radius: 4px; padding: 6px 12px;">
-                            <a href="${apptLink}" target="_blank" style="color: #ffffff; font-family: ${activeFont}; font-size: 13px; font-weight: bold; text-decoration: none; display: inline-block; line-height: 16px;">${apptText}</a>
+                            <a href="${apptLink}" target="_blank" rel="noopener noreferrer" style="color: #ffffff; font-family: ${activeFont}; font-size: 13px; font-weight: bold; text-decoration: none; display: inline-block; line-height: 16px;">${apptText}</a>
                         </td>
                     </tr>
                 </table>
@@ -860,9 +910,8 @@
                 let phoneHtmlT1 = `<span style="color: #000000; font-size: 14px; font-family: ${activeFont};">000 00 00 00</span>`;
                 if (validPhones.length > 0) {
                     phoneHtmlT1 = validPhones.map(p => {
-                        const cleanNum = p.num.replace(/\s/g, '');
                         const labelHtml = p.label ? `<strong style="font-weight: 600; font-family: ${activeFont};">${p.label}:&nbsp;</strong>` : '';
-                        return `${labelHtml}<a href="tel:${cleanNum}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
+                        return `${labelHtml}<a href="tel:${p.href}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
                     }).join('<br>');
                 }
 
@@ -897,7 +946,7 @@
                         </tr>
                         <tr>
                             <td width="24" style="vertical-align: top; padding-top: 2px;"><img src="${icons.website}" width="18" height="18" alt="web" style="display: block; background-color: ${activeColor}; border-radius: 3px; border: 0; outline: none; text-decoration: none;"></td>
-                            <td style="vertical-align: top; padding-bottom: 4px; font-family: ${activeFont};"><a href="https://${school.website}" target="_blank" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${school.website}</a></td>
+                            <td style="vertical-align: top; padding-bottom: 4px; font-family: ${activeFont};"><a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${schoolWebsiteLabel}</a></td>
                         </tr>
                         <tr>
                             <td width="24" style="vertical-align: top; padding-top: 2px;"><img src="${icons.address}" width="18" height="18" alt="adres" style="display: block; background-color: ${activeColor}; border-radius: 3px; border: 0; outline: none; text-decoration: none;"></td>
@@ -912,7 +961,7 @@
         <tr><td colspan="3" height="15" style="font-size: 15px; line-height: 15px;">&nbsp;</td></tr>
         <tr>
             <td colspan="3" align="${logoAlignmentAttr}" style="text-align: ${logoAlignmentAttr};">
-                <a href="https://${school.website}" target="_blank" style="text-decoration: none; display: inline-block; border: none; outline: none;">
+                <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block; border: none; outline: none;">
                     <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
                 </a>
             </td>
@@ -926,9 +975,8 @@
                 let phoneHtmlT2 = `<span style="color: #000000; font-size: 13px; font-family: ${activeFont};">000 00 00 00</span>`;
                 if (validPhones.length > 0) {
                     phoneHtmlT2 = validPhones.map(p => {
-                        const cleanNum = p.num.replace(/\s/g, '');
                         const labelText = p.label ? `<span style="color: ${activeColor}; font-weight: bold;">${p.label} </span>` : '';
-                        return `${labelText}<a href="tel:${cleanNum}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
+                        return `${labelText}<a href="tel:${p.href}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
                     }).join('<br>');
                 }
                 const phoneRowT2 = buildContactRowWithOptionalIcon({
@@ -959,7 +1007,7 @@
                     iconAlt: 'web',
                     iconSize: 16,
                     activeColor,
-                    contentHtml: `<a href="https://${school.website}" target="_blank" style="text-decoration: none; color: ${activeColor}; font-family: ${activeFont}; font-weight: bold;">Naar de website &rarr;</a>`,
+                    contentHtml: `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: ${activeColor}; font-family: ${activeFont}; font-weight: bold;">Naar de website &rarr;</a>`,
                     fontFamily: activeFont,
                     textColor: '#000000',
                     paddingBottom: 0
@@ -971,7 +1019,7 @@
         <tr>
             <!-- Logo Kolom -->
             <td align="${logoAlignmentAttr}" style="vertical-align: middle; padding-right: 20px; text-align: ${logoAlignmentAttr};">
-                <a href="https://${school.website}" target="_blank" style="text-decoration: none; display: inline-block; border: none; outline: none;">
+                <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block; border: none; outline: none;">
                     <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
                 </a>
             </td>
@@ -1006,9 +1054,8 @@
                 let phoneInlineHtml = `<span style="color: #000000; font-family: ${activeFont};">000 00 00 00</span>`;
                 if (validPhones.length > 0) {
                     phoneInlineHtml = validPhones.map(p => {
-                        const cleanNum = p.num.replace(/\s/g, '');
                         const labelText = p.label ? ` (${p.label})` : '';
-                        return `<a href="tel:${cleanNum}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}${labelText}</a>`;
+                        return `<a href="tel:${p.href}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}${labelText}</a>`;
                     }).join(` <span style="color: ${activeColor}; font-weight: bold; margin: 0 4px;">&bull;</span> `);
                 }
                 const phoneItemT3 = buildInlineContactItemWithOptionalIcon({
@@ -1033,7 +1080,7 @@
                     iconAlt: 'web',
                     iconSize: 14,
                     activeColor,
-                    contentHtml: `<a href="https://${school.website}" target="_blank" style="color: #000000; text-decoration: none; font-family: ${activeFont};">${school.website}</a>`
+                    contentHtml: `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="color: #000000; text-decoration: none; font-family: ${activeFont};">${schoolWebsiteLabel}</a>`
                 });
 
                 htmlString = `
@@ -1060,7 +1107,7 @@
         ${apptLink ? `
         <tr>
             <td style="padding-bottom: 12px; font-family: ${activeFont};">
-                <a href="${apptLink}" target="_blank" style="background-color: ${activeColor}; color: #ffffff; padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; text-decoration: none; display: inline-block;">${apptText}</a>
+                <a href="${apptLink}" target="_blank" rel="noopener noreferrer" style="background-color: ${activeColor}; color: #ffffff; padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; text-decoration: none; display: inline-block;">${apptText}</a>
             </td>
         </tr>
         ` : ''}
@@ -1077,7 +1124,7 @@
         <!-- Logo en KBO -->
         <tr>
             <td align="${logoAlignmentAttr}" style="padding-top: 4px; font-family: ${activeFont}; text-align: ${logoAlignmentAttr};">
-                <a href="https://${school.website}" target="_blank" style="text-decoration: none; display: inline-block; border: none; outline: none;">
+                <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block; border: none; outline: none;">
                     <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
                 </a>
                 ${enterpriseHtml}
@@ -1091,9 +1138,8 @@
                 let phoneHtmlT4 = `<span style="color: #000000; font-size: 13px; font-family: ${activeFont};">000 00 00 00</span>`;
                 if (validPhones.length > 0) {
                     phoneHtmlT4 = validPhones.map(p => {
-                        const cleanNum = p.num.replace(/\s/g, '');
                         const labelText = p.label ? `<span style="color: ${activeColor}; font-weight: bold;">${p.label} </span>` : '';
-                        return `${labelText}<a href="tel:${cleanNum}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
+                        return `${labelText}<a href="tel:${p.href}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
                     }).join('<br>');
                 }
                 const phoneRowT4 = buildContactRowWithOptionalIcon({
@@ -1124,7 +1170,7 @@
                     iconAlt: 'web',
                     iconSize: 16,
                     activeColor,
-                    contentHtml: `<a href="https://${school.website}" target="_blank" style="text-decoration: none; color: ${activeColor}; font-family: ${activeFont}; font-weight: bold;">Naar de website &rarr;</a>`,
+                    contentHtml: `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: ${activeColor}; font-family: ${activeFont}; font-weight: bold;">Naar de website &rarr;</a>`,
                     fontFamily: activeFont,
                     textColor: '#000000',
                     paddingBottom: 0
@@ -1157,7 +1203,7 @@
             
             <!-- Logo Kolom (Rechts) -->
             <td align="${logoAlignmentAttr}" style="vertical-align: middle; padding-left: 20px; text-align: ${logoAlignmentAttr};">
-                <a href="https://${school.website}" target="_blank" style="text-decoration: none; display: inline-block; border: none; outline: none;">
+                <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block; border: none; outline: none;">
                     <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
                 </a>
             </td>
@@ -1171,9 +1217,8 @@
                 let phoneInlineHtmlT5 = `<span style="color: #000000; font-family: ${activeFont};">000 00 00 00</span>`;
                 if (validPhones.length > 0) {
                     phoneInlineHtmlT5 = validPhones.map(p => {
-                        const cleanNum = p.num.replace(/\s/g, '');
                         const labelText = p.label ? ` (${p.label})` : '';
-                        return `<a href="tel:${cleanNum}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}${labelText}</a>`;
+                        return `<a href="tel:${p.href}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}${labelText}</a>`;
                     }).join(` <span style="color: ${activeColor}; font-weight: bold; margin: 0 6px;">|</span> `);
                 }
                 const phoneItemT5 = buildInlineContactItemWithOptionalIcon({
@@ -1198,14 +1243,14 @@
                     iconAlt: 'web',
                     iconSize: 14,
                     activeColor,
-                    contentHtml: `<a href="https://${school.website}" target="_blank" style="color: #000000; text-decoration: none; font-family: ${activeFont};">${school.website}</a>`
+                    contentHtml: `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="color: #000000; text-decoration: none; font-family: ${activeFont};">${schoolWebsiteLabel}</a>`
                 });
 
                 const appointmentHtmlT5 = apptLink ? `
                     <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin-top: 12px; margin-bottom: 4px;">
                         <tr>
                             <td align="center" style="background-color: ${activeColor}; border-radius: 4px; padding: 6px 16px;">
-                                <a href="${apptLink}" target="_blank" style="color: #ffffff; font-family: ${activeFont}; font-size: 13px; font-weight: bold; text-decoration: none; display: inline-block; line-height: 16px;">${apptText}</a>
+                                <a href="${apptLink}" target="_blank" rel="noopener noreferrer" style="color: #ffffff; font-family: ${activeFont}; font-size: 13px; font-weight: bold; text-decoration: none; display: inline-block; line-height: 16px;">${apptText}</a>
                             </td>
                         </tr>
                     </table>
@@ -1219,7 +1264,7 @@
         <!-- Logo Top -->
         <tr>
             <td align="${logoAlignmentAttr}" style="padding-bottom: 12px; text-align: ${logoAlignmentAttr};">
-                <a href="https://${school.website}" target="_blank" style="text-decoration: none; display: inline-block; border: none; outline: none;">
+                <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block; border: none; outline: none;">
                     <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
                 </a>
             </td>
@@ -1268,8 +1313,7 @@
                 let phoneHtmlT6 = `<span style="color: #000000; font-size: 13px; font-family: ${activeFont};">000 00 00 00</span>`;
                 if (validPhones.length > 0) {
                     phoneHtmlT6 = validPhones.map(p => {
-                        const cleanNum = p.num.replace(/\s/g, '');
-                        return `<a href="tel:${cleanNum}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
+                        return `<a href="tel:${p.href}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
                     }).join('<br>');
                 }
                 const phoneRowT6 = buildContactRowWithOptionalIcon({
@@ -1300,7 +1344,7 @@
                     iconAlt: 'web',
                     iconSize: 16,
                     activeColor,
-                    contentHtml: `<a href="https://${school.website}" target="_blank" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${school.website}</a>`,
+                    contentHtml: `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${schoolWebsiteLabel}</a>`,
                     fontFamily: activeFont,
                     textColor: '#000000',
                     paddingBottom: 2
@@ -1362,7 +1406,7 @@
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
                         <td align="${logoAlignmentAttr}" style="vertical-align: middle; text-align: ${logoAlignmentAttr};">
-                            <a href="https://${school.website}" target="_blank" style="text-decoration: none; display: inline-block; border: none; outline: none;">
+                            <a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-block; border: none; outline: none;">
                                 <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
                             </a>
                             ${enterpriseHtml}
