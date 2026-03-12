@@ -64,7 +64,7 @@
 
                             <!-- Primaire Kleurkiezer -->
                             <div class="w-full sm:w-1/4">
-                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1" title="Voor lijnen en icoontjes">Kleur (Basis)</label>
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1" title="Voor lijnen en icoontjes">KLEUR 1</label>
                                 <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2 py-1.5 shadow-sm focus-within:ring-2 focus-within:ring-emerald-500 transition-all">
                                     <input type="color" id="brandColorPicker" class="h-8 w-8 p-0 border-0 rounded-lg cursor-pointer bg-transparent shrink-0">
                                     <input type="text" id="brandColorText" class="w-full border-none p-0 outline-none uppercase text-xs font-mono text-slate-700 bg-transparent" maxlength="7" placeholder="#000000">
@@ -73,7 +73,7 @@
                             
                             <!-- Secundaire Kleurkiezer -->
                             <div class="w-full sm:w-1/4">
-                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1" title="Voor de schoolnaam">Kleur (Naam)</label>
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1" title="Voor de schoolnaam">KLEUR 2</label>
                                 <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2 py-1.5 shadow-sm focus-within:ring-2 focus-within:ring-emerald-500 transition-all">
                                     <input type="color" id="secondaryColorPicker" class="h-8 w-8 p-0 border-0 rounded-lg cursor-pointer bg-transparent shrink-0">
                                     <input type="text" id="secondaryColorText" class="w-full border-none p-0 outline-none uppercase text-xs font-mono text-slate-700 bg-transparent" maxlength="7" placeholder="#000000">
@@ -139,7 +139,7 @@
                         <h3 class="text-sm font-semibold text-slate-800 border-b border-slate-100 pb-2">Contactgegevens</h3>
                         <div>
                             <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">E-mailadres</label>
-                            <input type="email" id="email" placeholder="jan.peeters@sgfv.be" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700">
+                            <input type="email" id="email" placeholder="jan.peeters@sgfv.be of --email--" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700">
                         </div>
 
                         <div id="phoneContainer" class="space-y-3">
@@ -147,7 +147,7 @@
                             <!-- Dynamische telefoon rijen -->
                             <div class="flex gap-2 phone-row group">
                                 <input type="text" placeholder="Bv. SGFV" class="w-1/3 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm phone-label">
-                                <input type="text" placeholder="051 12 34 56" class="w-2/3 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 phone-number">
+                                <input type="text" placeholder="051 12 34 56 of --phone--" class="w-2/3 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 phone-number">
                             </div>
                         </div>
                         <button type="button" id="addPhoneBtn" class="text-xs font-bold text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 mt-1 border border-transparent hover:border-emerald-100">
@@ -279,7 +279,7 @@
 
                         <div>
                             <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Ondernemingsnr. (Opt.)</label>
-                            <input type="text" id="enterpriseNum" placeholder="Bv. BE 0123.456.789" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                            <input type="text" id="enterpriseNum" value="0446.162.881" placeholder="Bv. BE 0446.162.881" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
                         </div>
                     </div>
 
@@ -402,8 +402,8 @@
             {
                 id: 'SGFV',
                 name: 'Scholengemeenschap Ferdinand Verbiest',
-                color: '#B0CEA0',
-                secondaryColor: '#5BB056',
+                color: '#5BB056',
+                secondaryColor: '#1d5200',
                 logos: [
                     { name: 'Standaard Logo (Horizontaal)', url: `${ASSET_BASE_URL}/SGFV/logo-horizontal-primary.png` },
                     { name: 'Horizontaal 01 (PNG)', url: `${ASSET_BASE_URL}/SGFV/logo-horizontal-01.png` },
@@ -607,7 +607,7 @@
             row.className = 'flex gap-2 phone-row mt-3 group';
             row.innerHTML = `
                 <input type="text" placeholder="Bv. De Paanders" class="w-1/3 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm phone-label">
-                <input type="text" placeholder="0499 12 34 56" class="w-2/3 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 phone-number">
+                <input type="text" placeholder="0499 12 34 56 of --phone--" class="w-2/3 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 phone-number">
             `;
             row.querySelectorAll('input').forEach(input => {
                 input.addEventListener('input', updateSignature);
@@ -686,7 +686,7 @@
                 const numberInput = firstPhoneRow.querySelector('.phone-number');
                 
                 labelInput.placeholder = 'Bv. ' + school.id;
-                numberInput.placeholder = school.phone;
+                numberInput.placeholder = `${school.phone} of --phone--`;
                 
                 labelInput.value = '';
                 numberInput.value = school.phone;
@@ -724,12 +724,19 @@
 
         function sanitizeEmail(value) {
             const trimmed = String(value ?? '').trim();
+            // Laat directory-placeholders toe zoals --email--.
+            const placeholderRegex = /^--[A-Za-z0-9._-]+--$/;
+            if (placeholderRegex.test(trimmed)) return trimmed;
             const emailRegex = /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
             return emailRegex.test(trimmed) ? trimmed : '';
         }
 
         function sanitizeTel(value) {
-            const compact = String(value ?? '').replace(/[^\d+]/g, '');
+            const trimmed = String(value ?? '').trim();
+            // Laat directory-placeholders toe zoals --phone--.
+            const placeholderRegex = /^--[A-Za-z0-9._-]+--$/;
+            if (placeholderRegex.test(trimmed)) return trimmed;
+            const compact = trimmed.replace(/[^\d+]/g, '');
             if (!compact) return '';
             if ((compact.match(/\+/g) || []).length > 1) return '';
             if (compact.includes('+') && !compact.startsWith('+')) return '';
