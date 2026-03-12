@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGFV Handtekening Generator</title>
+    <!-- Tailwind CSS voor een strakke, moderne vormgeving van de tool -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Extra styling voor het preview vak */
+        .preview-container {
+            background-color: #d2dcd4;
+            background-image: radial-gradient(#a3b3a6 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        /* Subtiele scrollbar voor een mooiere afwerking */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-10 text-center md:text-left pt-4">
+            <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight flex flex-col md:flex-row items-center justify-center md:justify-start gap-4">
+                <span>Signature <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-500">Creator</span></span>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-sm font-bold shadow-sm border border-emerald-200 relative md:-top-1">
+                    ✨ SGFV Tools
+                </span>
+            </h1>
+            <p class="text-slate-500 mt-3 text-lg">Personaliseer en kopieer je professionele e-mailhandtekening in enkele seconden.</p>
+        </header>
+
+        <div class="flex flex-col xl:flex-row gap-8">
+            
+            <!-- Linker Kolom: Formulier -->
+            <div class="w-full xl:w-5/12 bg-white rounded-3xl shadow-xl shadow-slate-200/40 border border-slate-100 overflow-hidden flex flex-col h-full max-h-[85vh]">
+                <!-- Kleurrijke Form Header -->
+                <div class="bg-gradient-to-br from-emerald-500 to-teal-600 p-6 text-white shrink-0">
+                    <h2 class="text-2xl font-bold flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        Jouw Gegevens
+                    </h2>
+                    <p class="text-emerald-50 text-sm mt-1 opacity-90">Vul je details in. De preview hiernaast updatet live.</p>
+                </div>
+                
+                <form id="signatureForm" class="p-6 space-y-7 flex-grow overflow-y-auto">
+                    
+                    <!-- Sectie: School & Styling -->
+                    <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100 space-y-4 shadow-sm">
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <!-- School Selectie -->
+                            <div class="w-full sm:w-1/2">
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">School / Locatie</label>
+                                <select id="schoolSelect" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-sm text-slate-700 cursor-pointer">
+                                    <!-- Opties worden via JavaScript geladen -->
+                                </select>
+                            </div>
+
+                            <!-- Primaire Kleurkiezer -->
+                            <div class="w-full sm:w-1/4">
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1" title="Voor lijnen en icoontjes">Kleur (Basis)</label>
+                                <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2 py-1.5 shadow-sm focus-within:ring-2 focus-within:ring-emerald-500 transition-all">
+                                    <input type="color" id="brandColorPicker" class="h-8 w-8 p-0 border-0 rounded-lg cursor-pointer bg-transparent shrink-0">
+                                    <input type="text" id="brandColorText" class="w-full border-none p-0 outline-none uppercase text-xs font-mono text-slate-700 bg-transparent" maxlength="7" placeholder="#000000">
+                                </div>
+                            </div>
+                            
+                            <!-- Secundaire Kleurkiezer -->
+                            <div class="w-full sm:w-1/4">
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1" title="Voor de schoolnaam">Kleur (Naam)</label>
+                                <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2 py-1.5 shadow-sm focus-within:ring-2 focus-within:ring-emerald-500 transition-all">
+                                    <input type="color" id="secondaryColorPicker" class="h-8 w-8 p-0 border-0 rounded-lg cursor-pointer bg-transparent shrink-0">
+                                    <input type="text" id="secondaryColorText" class="w-full border-none p-0 outline-none uppercase text-xs font-mono text-slate-700 bg-transparent" maxlength="7" placeholder="#000000">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Template & Font Selectie in 1 rij -->
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <div class="w-full sm:w-1/2">
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Template / Lay-out</label>
+                                <select id="templateSelect" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-sm text-slate-700 cursor-pointer">
+                                    <option value="1">1. Standaard (Logo onderaan)</option>
+                                    <option value="2">2. Compact (Logo links)</option>
+                                    <option value="3">3. Modern (Regels onder elkaar)</option>
+                                    <option value="4">4. Corporate (Logo rechts)</option>
+                                    <option value="5">5. Centraal (Alles gecentreerd)</option>
+                                    <option value="6">6. Avatar (Foto links, Logo onder)</option>
+                                </select>
+                            </div>
+                            <div class="w-full sm:w-1/2">
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Lettertype</label>
+                                <select id="fontSelect" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-sm text-slate-700 cursor-pointer">
+                                    <option value="Tahoma, sans-serif">Tahoma</option>
+                                    <option value="Arial, Helvetica, sans-serif">Arial</option>
+                                    <option value="'Segoe UI', Roboto, sans-serif">Segoe UI</option>
+                                    <option value="Verdana, sans-serif">Verdana</option>
+                                    <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+                                    <option value="Georgia, serif">Georgia</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sectie: Persoonlijk -->
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-semibold text-slate-800 border-b border-slate-100 pb-2">Persoonlijke Info</h3>
+                        <div class="flex gap-4">
+                            <div class="w-1/2">
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Voornaam</label>
+                                <input type="text" id="firstName" placeholder="Jan" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700">
+                            </div>
+                            <div class="w-1/2">
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Achternaam</label>
+                                <input type="text" id="lastName" placeholder="Peeters" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700">
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-1/2">
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Functie</label>
+                                <input type="text" id="jobTitle" placeholder="Zorgcoördinator" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700">
+                            </div>
+                            <div class="w-1/2">
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1" title="Optionele afdeling of extra locatie">Afdeling (Opt.)</label>
+                                <input type="text" id="department" placeholder="Bv. De Paanders" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sectie: Contact -->
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-semibold text-slate-800 border-b border-slate-100 pb-2">Contactgegevens</h3>
+                        <div>
+                            <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">E-mailadres</label>
+                            <input type="email" id="email" placeholder="jan.peeters@sgfv.be" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700">
+                        </div>
+
+                        <div id="phoneContainer" class="space-y-3">
+                            <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Telefoonnummers</label>
+                            <!-- Dynamische telefoon rijen -->
+                            <div class="flex gap-2 phone-row group">
+                                <input type="text" placeholder="Bv. SGFV" class="w-1/3 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm phone-label">
+                                <input type="text" placeholder="051 12 34 56" class="w-2/3 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 phone-number">
+                            </div>
+                        </div>
+                        <button type="button" id="addPhoneBtn" class="text-xs font-bold text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 mt-1 border border-transparent hover:border-emerald-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                            </svg>
+                            Extra nummer toevoegen
+                        </button>
+                    </div>
+
+                    <!-- Sectie: Social Media -->
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-semibold text-slate-800 border-b border-slate-100 pb-2">Social Media (Optioneel)</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Facebook</label>
+                                <input type="url" id="socialFacebook" placeholder="https://facebook.com/..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Instagram</label>
+                                <input type="url" id="socialInstagram" placeholder="https://instagram.com/..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">LinkedIn</label>
+                                <input type="url" id="socialLinkedin" placeholder="https://linkedin.com/..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">X (Twitter)</label>
+                                <input type="url" id="socialX" placeholder="https://x.com/..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">WhatsApp (Link)</label>
+                                <input type="url" id="socialWhatsapp" placeholder="https://wa.me/324..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- NIEUWE SECTIE: Afbeeldingen & Logo's -->
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-semibold text-slate-800 border-b border-slate-100 pb-2">Afbeeldingen & Logo's</h3>
+                        
+                        <!-- BASISLOGO -->
+                        <div class="flex gap-4">
+                            <div class="w-2/3">
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Basislogo School</label>
+                                <select id="mainLogoSelect" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-800 font-medium text-sm cursor-pointer">
+                                    <!-- Opties worden via JavaScript geladen op basis van school -->
+                                </select>
+                            </div>
+                            <div class="w-1/3">
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1" title="Breedte van het logo in pixels">Breedte (px)</label>
+                                <input type="number" id="logoSize" value="160" min="50" max="400" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                            </div>
+                        </div>
+
+                        <div class="w-full sm:w-2/3">
+                            <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Uitlijning Basislogo</label>
+                            <div class="flex items-center gap-2">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="logoAlignMode" value="auto" checked class="sr-only peer">
+                                    <span class="inline-flex items-center justify-center px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-xs font-semibold transition-all peer-checked:bg-emerald-600 peer-checked:border-emerald-600 peer-checked:text-white">Auto</span>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="logoAlignMode" value="left" class="sr-only peer">
+                                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 transition-all peer-checked:bg-emerald-600 peer-checked:border-emerald-600 peer-checked:text-white" title="Links">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="18" height="2"/><rect x="3" y="9" width="12" height="2"/><rect x="3" y="13" width="18" height="2"/><rect x="3" y="17" width="12" height="2"/></svg>
+                                    </span>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="logoAlignMode" value="center" class="sr-only peer">
+                                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 transition-all peer-checked:bg-emerald-600 peer-checked:border-emerald-600 peer-checked:text-white" title="Centraal">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="18" height="2"/><rect x="6" y="9" width="12" height="2"/><rect x="3" y="13" width="18" height="2"/><rect x="6" y="17" width="12" height="2"/></svg>
+                                    </span>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="logoAlignMode" value="right" class="sr-only peer">
+                                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 transition-all peer-checked:bg-emerald-600 peer-checked:border-emerald-600 peer-checked:text-white" title="Rechts">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="18" height="2"/><rect x="9" y="9" width="12" height="2"/><rect x="3" y="13" width="18" height="2"/><rect x="9" y="17" width="12" height="2"/></svg>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- AVATAR DROPDOWN (Enkel zichtbaar in Template 6) -->
+                        <div id="avatarContainer" class="hidden flex gap-4">
+                            <div class="w-2/3">
+                                <label class="block text-xs font-bold tracking-wide text-emerald-600 uppercase mb-1.5 ml-1" title="Kies een afbeelding voor in je avatar.">
+                                    <span class="flex items-center gap-1.5">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                        Avatar / Foto
+                                    </span>
+                                </label>
+                                <select id="avatarSelect" class="w-full px-4 py-2.5 bg-emerald-50 border border-emerald-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-emerald-800 font-medium text-sm cursor-pointer">
+                                    <!-- Opties worden via JavaScript geladen op basis van school -->
+                                </select>
+                            </div>
+                            <div class="w-1/3">
+                                <label class="block text-xs font-bold tracking-wide text-emerald-600 uppercase mb-1.5 ml-1" title="Breedte van de avatar in pixels">Grootte (px)</label>
+                                <input type="number" id="avatarSize" value="90" min="30" max="200" class="w-full px-4 py-2.5 bg-emerald-50 border border-emerald-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-emerald-800 text-sm">
+                            </div>
+                        </div>
+
+                        <!-- CONTACT ICON TOGGLE (Templates 2 t.e.m. 6) -->
+                        <div id="contactIconsContainer" class="hidden space-y-2">
+                            <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase ml-1">Contacticoontjes (Templates 2-6)</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-1 gap-2">
+                                <label class="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 cursor-pointer w-fit">
+                                    <input id="toggleContactIcons" type="checkbox" checked class="accent-emerald-600">
+                                    <span>Toon contacticoontjes</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sectie: Extra's -->
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-semibold text-slate-800 border-b border-slate-100 pb-2">Extra Opties</h3>
+                        
+                        <div class="flex gap-4">
+                            <div class="w-1/2">
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Knop Link (Opt.)</label>
+                                <input type="url" id="appointmentLink" placeholder="https://calendly.com/..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                            </div>
+                            <div class="w-1/2">
+                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Knop Tekst</label>
+                                <input type="text" id="appointmentText" placeholder="Boek een afspraak" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Ondernemingsnr. (Opt.)</label>
+                            <input type="text" id="enterpriseNum" placeholder="Bv. BE 0123.456.789" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Rechter Kolom: Preview & Acties -->
+            <div class="w-full xl:w-7/12 flex flex-col h-full">
+                <!-- Preview Header met Knoppen -->
+                <div class="bg-white p-6 rounded-t-3xl border border-slate-200 border-b-0 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-sm relative z-10">
+                    <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        Live Voorbeeld
+                    </h2>
+                    <div class="flex gap-3">
+                        <button id="copyHtmlBtn" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-xl font-medium transition-all shadow-md hover:shadow-lg flex items-center gap-2 text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                            </svg>
+                            Kopieer HTML
+                        </button>
+                        <button id="copyBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-xl font-medium transition-all shadow-md hover:shadow-lg shadow-emerald-500/30 flex items-center gap-2 text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Kopieer Visueel
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Preview Container (met groene esthetiek) -->
+                <div class="preview-container p-6 sm:p-10 border border-slate-200 rounded-b-3xl flex-grow flex flex-col items-center overflow-x-auto shadow-inner">
+                    
+                    <!-- Email Applicatie Mockup (GMAIL STIJL) -->
+                    <div class="w-full max-w-[700px] bg-white rounded-t-xl rounded-b shadow-2xl overflow-hidden border border-slate-300 flex flex-col font-sans">
+                        
+                        <!-- Top bar (Gmail look) -->
+                        <div class="bg-[#f2f6fc] px-4 py-3 flex items-center justify-between shrink-0 rounded-t-xl">
+                            <span class="text-sm font-medium text-slate-800">Nieuw bericht</span>
+                            <div class="flex items-center gap-3 text-slate-500">
+                                <!-- Minimize -->
+                                <svg class="w-4 h-4 cursor-pointer hover:text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" /></svg>
+                                <!-- Expand -->
+                                <svg class="w-4 h-4 cursor-pointer hover:text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
+                                <!-- Close -->
+                                <svg class="w-4 h-4 cursor-pointer hover:text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                            </div>
+                        </div>
+
+                        <!-- Email Meta data -->
+                        <div class="px-4 py-1 bg-white flex flex-col text-sm border-b border-slate-100">
+                            <!-- Aan -->
+                            <div class="flex items-center justify-between py-2 border-b border-slate-100">
+                                <div class="flex items-center flex-grow gap-2">
+                                    <span class="text-slate-500">Aan</span>
+                                    <div class="inline-flex items-center px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-sm text-slate-700">
+                                        ontvanger@domein.be
+                                    </div>
+                                    <span class="text-slate-800 font-light text-base h-5 border-l border-slate-800 animate-pulse ml-1"></span>
+                                </div>
+                                <div class="text-slate-500 flex gap-2 text-xs font-semibold tracking-wide">
+                                    <span class="hover:underline cursor-pointer">Cc</span>
+                                    <span class="hover:underline cursor-pointer">Bcc</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Onderwerp -->
+                            <div class="flex items-center py-2.5">
+                                <span class="text-slate-800 font-medium text-base">Nieuwe e-mailhandtekening</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Body -->
+                        <div class="px-4 pt-6 pb-6 bg-white flex-grow">
+                            <!-- Dummy Tekst (Skeleton lines) -->
+                            <div class="space-y-3 mb-10">
+                                <div class="h-3.5 bg-[#b2c3d1] rounded-full w-full max-w-2xl"></div>
+                                <div class="h-3.5 bg-[#b2c3d1] rounded-full w-2/3 max-w-md"></div>
+                            </div>
+
+                            <!-- DIT IS HET ELEMENT DAT GEKOPIEERD WORDT -->
+                            <div id="signaturePreview" class="min-w-full transition-all bg-white pb-2">
+                                <!-- De HTML template wordt hier via JavaScript ingeladen -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Succes Melding -->
+                <div id="successMsg" class="hidden mt-6 bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-4 rounded-2xl shadow-sm flex items-start gap-3 transition-all" role="alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                        <strong class="font-bold block text-emerald-900">Gelukt!</strong>
+                        <span id="successText" class="block text-sm mt-0.5 opacity-90">De actie is succesvol uitgevoerd.</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- 0. BASIS INSTELLINGEN ---
+        // Pas deze variabele aan wanneer de tool op een live server staat (bijv. 'https://assets.sgfv.be')
+        const ASSET_BASE_URL = 'http://127.0.0.1:5500/assets';
+
+        // --- 1. CONFIGURATIE VAN DE SCHOLEN ---
+        // Data exact overgenomen uit de SGFV Cheat Sheet (Versie 3.0)
+        // logos = Dropdown opties voor het hoofdlogo (Basislogo)
+        // avatars = Dropdown opties voor in de "Avatar / Foto" template
+        // secondaryColor (optioneel) = Aparte kleur voor de schoolnaam
+        const schools = [
+            {
+                id: 'SGFV',
+                name: 'Scholengemeenschap Ferdinand Verbiest',
+                color: '#5DB159',
+                secondaryColor: '#1E4B2A',
+                logos: [
+                    { name: 'Standaard Logo (Horizontaal)', url: `${ASSET_BASE_URL}/SGFV/logo-horizontal-primary.png` },
+                    { name: 'Horizontaal 01 (PNG)', url: `${ASSET_BASE_URL}/SGFV/logo-horizontal-01.png` },
+                    { name: 'Horizontaal 01 (JPG)', url: `${ASSET_BASE_URL}/SGFV/logo-horizontal-01.jpg` },
+                    { name: 'Horizontaal 01 (Transparant)', url: `${ASSET_BASE_URL}/SGFV/logo-horizontal-01-transparent.png` },
+                    { name: 'Horizontaal 03', url: `${ASSET_BASE_URL}/SGFV/logo-horizontal-03.png` },
+                    { name: 'Horizontaal 04', url: `${ASSET_BASE_URL}/SGFV/logo-horizontal-04.png` },
+                    { name: 'Horizontaal 05', url: `${ASSET_BASE_URL}/SGFV/logo-horizontal-05.png` },
+                    { name: 'Verticaal 01', url: `${ASSET_BASE_URL}/SGFV/logo-vertical-01.png` },
+                    { name: 'Verticaal 02', url: `${ASSET_BASE_URL}/SGFV/logo-vertical-02.png` }
+                ],
+                avatars: [
+                    { name: 'Icoon 01 (Transparant)', url: `${ASSET_BASE_URL}/SGFV/avatar-icon-01-transparent.png` },
+                    { name: 'Icoon 02 (Transparant)', url: `${ASSET_BASE_URL}/SGFV/avatar-icon-02-transparent.png` },
+                    { name: 'Icoon 01 (PNG)', url: `${ASSET_BASE_URL}/SGFV/avatar-icon-01.png` },
+                    { name: 'Icoon 01 (JPG)', url: `${ASSET_BASE_URL}/SGFV/avatar-icon-01.jpg` },
+                    { name: 'Icoon 03', url: `${ASSET_BASE_URL}/SGFV/avatar-icon-03.png` },
+                    { name: 'Icoon 04', url: `${ASSET_BASE_URL}/SGFV/avatar-icon-04.png` }
+                ],
+                website: 'www.sgfv.be',
+                address: 'Baljuw Vermeulenstraat 1A, 8760 MEULEBEKE',
+                phone: '051 79 17 77'
+            },
+            {
+                id: 'FML',
+                name: 'Kleuterschool Sint-Lutgardis',
+                color: '#049FE2',
+                secondaryColor: '#43403E',
+                logos: [
+                    { name: 'Standaard Logo (Horizontaal RGB)', url: `${ASSET_BASE_URL}/FML/logo-horizontal-rgb.png` },
+                    { name: 'Vierkant Logo', url: `${ASSET_BASE_URL}/FML/logo-square-primary.png` }
+                ],
+                avatars: [
+                    { name: 'Rond Logo', url: `${ASSET_BASE_URL}/FML/avatar-round.png` },
+                    { name: 'Vierkant Logo', url: `${ASSET_BASE_URL}/FML/logo-square-primary.png` }
+                ],
+                website: 'www.kleuterschool-sintlutgardis.be',
+                address: 'Karel van Manderstraat 33, 8760 MEULEBEKE',
+                phone: '051 48 80 86'
+            },
+            {
+                id: 'FMP',
+                name: 'Paandersschool Meulebeke',
+                color: '#9C6B31',
+                secondaryColor: '#4A3A25',
+                logos: [
+                    { name: 'Standaard Logo (Horizontaal)', url: `${ASSET_BASE_URL}/FMP/logo-horizontal-primary.png` },
+                    { name: 'Compact Logo', url: `${ASSET_BASE_URL}/FMP/logo-compact-square.png` },
+                    { name: 'Vierkant (Gele Bol)', url: `${ASSET_BASE_URL}/FMP/logo-square-yellow-dot.png` },
+                    { name: 'Vierkant (Gele Bol + Naam)', url: `${ASSET_BASE_URL}/FMP/logo-square-yellow-dot-name.png` }
+                ],
+                avatars: [
+                    { name: 'Vierkant (Gele Bol)', url: `${ASSET_BASE_URL}/FMP/logo-square-yellow-dot.png` },
+                    { name: 'Vierkant (Gele Bol + Naam)', url: `${ASSET_BASE_URL}/FMP/logo-square-yellow-dot-name.png` },
+                    { name: 'Compact Logo', url: `${ASSET_BASE_URL}/FMP/logo-compact-square.png` }
+                ],
+                website: 'www.paandersschoolmeulebeke.be',
+                address: 'Paanderstraat 49, 8760 MEULEBEKE',
+                phone: '051 48 74 03'
+            },
+            {
+                id: 'FMT',
+                name: 'Basisschool \'t Veld',
+                color: '#9ABC36',
+                secondaryColor: '#CA4F20',
+                logos: [
+                    { name: 'Standaard Logo (Horizontaal)', url: `${ASSET_BASE_URL}/FMT/logo-horizontal-primary.png` },
+                    { name: 'Vierkant (Kleur)', url: `${ASSET_BASE_URL}/FMT/logo-square-color.png` },
+                    { name: 'Vierkant (Wit)', url: `${ASSET_BASE_URL}/FMT/logo-square-white.png` },
+                    { name: 'Vierkant (Legacy JPG)', url: `${ASSET_BASE_URL}/FMT/logo-square-legacy.jpg` }
+                ],
+                avatars: [
+                    { name: 'Vierkant (Kleur)', url: `${ASSET_BASE_URL}/FMT/logo-square-color.png` },
+                    { name: 'Vierkant (Wit)', url: `${ASSET_BASE_URL}/FMT/logo-square-white.png` },
+                    { name: 'Vierkant (Legacy JPG)', url: `${ASSET_BASE_URL}/FMT/logo-square-legacy.jpg` }
+                ],
+                website: 'www.basisschooltveld.be',
+                address: 'Sint-Antoniusstraat 3, 8760 MEULEBEKE',
+                phone: '051 48 61 17'
+            },
+            {
+                id: 'FPP',
+                name: 'Basisschool PIT',
+                color: '#16AAA8',
+                secondaryColor: '#1B9461',
+                logos: [
+                    { name: 'Standaard Logo (Horizontaal)', url: `${ASSET_BASE_URL}/FPP/logo-horizontal-primary.png` },
+                    { name: 'Vierkant (Kleur)', url: `${ASSET_BASE_URL}/FPP/logo-square-color.png` },
+                    { name: 'Vierkant (Zwart)', url: `${ASSET_BASE_URL}/FPP/logo-square-black.png` }
+                ],
+                avatars: [
+                    { name: 'Vierkant (Kleur)', url: `${ASSET_BASE_URL}/FPP/logo-square-color.png` },
+                    { name: 'Vierkant (Zwart)', url: `${ASSET_BASE_URL}/FPP/logo-square-black.png` }
+                ],
+                website: 'www.basisschoolpit.be',
+                address: 'Koolskampstraat 4, 8740 PITTEM',
+                phone: '051 46 66 24'
+            },
+            {
+                id: 'FMM',
+                name: 'Marialoopschool Meulebeke',
+                color: '#296EF8',
+                secondaryColor: '#1D499D',
+                logos: [
+                    { name: 'Standaard Logo (Horizontaal)', url: `${ASSET_BASE_URL}/FMM/logo-horizontal-primary.png` },
+                    { name: 'Horizontaal RGB', url: `${ASSET_BASE_URL}/FMM/logo-horizontal-rgb.png` },
+                    { name: 'Horizontaal RGB (400)', url: `${ASSET_BASE_URL}/FMM/logo-horizontal-rgb-400.png` },
+                    { name: 'Horizontaal Zwart', url: `${ASSET_BASE_URL}/FMM/logo-horizontal-black.png` },
+                    { name: 'Horizontaal Zwart (Transparant)', url: `${ASSET_BASE_URL}/FMM/logo-horizontal-black-transparent.png` },
+                    { name: 'Vierkant Zwart Negatief', url: `${ASSET_BASE_URL}/FMM/logo-square-black-negative-transparent.png` },
+                    { name: 'Avatar Uil', url: `${ASSET_BASE_URL}/FMM/avatar-owl.png` }
+                ],
+                avatars: [
+                    { name: 'Avatar Uil', url: `${ASSET_BASE_URL}/FMM/avatar-owl.png` },
+                    { name: 'Vierkant Zwart Negatief', url: `${ASSET_BASE_URL}/FMM/logo-square-black-negative-transparent.png` },
+                    { name: 'Standaard Logo (Horizontaal)', url: `${ASSET_BASE_URL}/FMM/logo-horizontal-primary.png` }
+                ],
+                website: 'www.marialoopschoolmeulebeke.be',
+                address: 'Marialoopsteenweg 55, 8760 MEULEBEKE',
+                phone: '051 40 35 67'
+            },
+            {
+                id: 'FMA',
+                name: 'Sint-Amandusschool Meulebeke',
+                color: '#02A651',
+                secondaryColor: '#2A4273',
+                logos: [
+                    { name: 'Standaard Logo (Horizontaal RGB)', url: `${ASSET_BASE_URL}/FMA/logo-horizontal-rgb.png` },
+                    { name: 'Gestapeld RGB', url: `${ASSET_BASE_URL}/FMA/logo-stacked-rgb.png` },
+                    { name: 'Vierkant RGB', url: `${ASSET_BASE_URL}/FMA/logo-square-rgb.png` },
+                    { name: 'Vierkant Standaard', url: `${ASSET_BASE_URL}/FMA/logo-square-primary.png` }
+                ],
+                avatars: [
+                    { name: 'Vierkant RGB', url: `${ASSET_BASE_URL}/FMA/logo-square-rgb.png` },
+                    { name: 'Vierkant Standaard', url: `${ASSET_BASE_URL}/FMA/logo-square-primary.png` },
+                    { name: 'Gestapeld RGB', url: `${ASSET_BASE_URL}/FMA/logo-stacked-rgb.png` }
+                ],
+                website: 'www.sintamandusschoolmeulebeke.be',
+                address: 'Schutterijstraat 6, 8760 MEULEBEKE',
+                phone: '051 48 71 49'
+            },
+            {
+                id: 'FEA',
+                name: 'De Akker',
+                color: '#8CC539',
+                secondaryColor: '#54593D',
+                logos: [
+                    { name: 'Standaard Logo (Horizontaal)', url: `${ASSET_BASE_URL}/FEA/logo-horizontal-primary.png` },
+                    { name: 'Horizontaal Kleur', url: `${ASSET_BASE_URL}/FEA/logo-horizontal-color.png` },
+                    { name: 'Horizontaal Kleur + Slogan', url: `${ASSET_BASE_URL}/FEA/logo-horizontal-color-slogan.png` }
+                ],
+                avatars: [
+                    { name: 'Icoon Kleur', url: `${ASSET_BASE_URL}/FEA/avatar-icon-color.png` },
+                    { name: 'Icoon Zwart', url: `${ASSET_BASE_URL}/FEA/avatar-icon-black.png` }
+                ],
+                website: 'www.deakker.net',
+                address: 'Molenakker 97, 8740 EGEM',
+                phone: '051 46 76 99'
+            }
+        ];
+
+        // Icoontjes
+        const icons = {
+            phone: `${ASSET_BASE_URL}/ICONS/phone.png`,
+            email: `${ASSET_BASE_URL}/ICONS/email.png`,
+            website: `${ASSET_BASE_URL}/ICONS/link.png`,
+            address: `${ASSET_BASE_URL}/ICONS/address.png`,
+            facebook: `${ASSET_BASE_URL}/ICONS/facebook.png`,
+            instagram: `${ASSET_BASE_URL}/ICONS/instagram.png`,
+            linkedin: `${ASSET_BASE_URL}/ICONS/linkedin.png`,
+            x: `${ASSET_BASE_URL}/ICONS/x.png`,
+            whatsapp: `${ASSET_BASE_URL}/ICONS/whatsapp.png`
+        };
+
+        // --- 2. INITIALISATIE ---
+        const schoolSelect = document.getElementById('schoolSelect');
+        const previewContainer = document.getElementById('signaturePreview');
+        const inputs = document.querySelectorAll('input');
+        const colorPicker = document.getElementById('brandColorPicker');
+        const colorText = document.getElementById('brandColorText');
+        const secondaryColorPicker = document.getElementById('secondaryColorPicker'); 
+        const secondaryColorText = document.getElementById('secondaryColorText'); 
+        const phoneContainer = document.getElementById('phoneContainer');
+        const addPhoneBtn = document.getElementById('addPhoneBtn');
+        const fontSelect = document.getElementById('fontSelect');
+        const templateSelect = document.getElementById('templateSelect');
+        
+        // Beheer van de logo & avatar dropdowns + grootte
+        const mainLogoSelect = document.getElementById('mainLogoSelect');
+        const logoAlignInputs = document.querySelectorAll('input[name="logoAlignMode"]');
+        const logoSizeInput = document.getElementById('logoSize');
+        const avatarContainer = document.getElementById('avatarContainer');
+        const avatarSelect = document.getElementById('avatarSelect');
+        const avatarSizeInput = document.getElementById('avatarSize');
+        const contactIconsContainer = document.getElementById('contactIconsContainer');
+        const toggleContactIcons = document.getElementById('toggleContactIcons');
+
+        // Functionaliteit om extra telefoonvelden toe te voegen
+        addPhoneBtn.addEventListener('click', () => {
+            const row = document.createElement('div');
+            row.className = 'flex gap-2 phone-row mt-3 group';
+            row.innerHTML = `
+                <input type="text" placeholder="Bv. De Paanders" class="w-1/3 px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm phone-label">
+                <input type="text" placeholder="0499 12 34 56" class="w-2/3 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 phone-number">
+            `;
+            row.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', updateSignature);
+            });
+            phoneContainer.appendChild(row);
+            updateSignature();
+        });
+
+        // Vul de dropdown met scholen
+        schools.forEach((school, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = school.name;
+            schoolSelect.appendChild(option);
+        });
+
+        // Hulpfunctie om basislogo-opties in te laden
+        function populateMainLogos(school) {
+            mainLogoSelect.innerHTML = '';
+            if (school.logos && school.logos.length > 0) {
+                school.logos.forEach((logo) => {
+                    const option = document.createElement('option');
+                    option.value = logo.url;
+                    option.textContent = logo.name;
+                    mainLogoSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Hulpfunctie om avatar-opties in te laden
+        function populateAvatars(school) {
+            avatarSelect.innerHTML = '';
+            if (school.avatars && school.avatars.length > 0) {
+                school.avatars.forEach((avatar) => {
+                    const option = document.createElement('option');
+                    option.value = avatar.url;
+                    option.textContent = avatar.name;
+                    avatarSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Hulpfunctie: toon template-specifieke beeldopties
+        function toggleTemplateImageControls() {
+            if (templateSelect.value === '6') {
+                avatarContainer.classList.remove('hidden');
+            } else {
+                avatarContainer.classList.add('hidden');
+            }
+
+            if (templateSelect.value !== '1') {
+                contactIconsContainer.classList.remove('hidden');
+            } else {
+                contactIconsContainer.classList.add('hidden');
+            }
+        }
+
+        // Set initiële kleur, placeholders en afbeeldingen
+        colorPicker.value = schools[0].color;
+        colorText.value = schools[0].color.toUpperCase();
+        
+        const initialSecColor = schools[0].secondaryColor || schools[0].color;
+        secondaryColorPicker.value = initialSecColor;
+        secondaryColorText.value = initialSecColor.toUpperCase();
+        
+        populateMainLogos(schools[0]);
+        populateAvatars(schools[0]);
+        toggleTemplateImageControls();
+        updatePlaceholders(schools[0]);
+
+        // Hulpfunctie om placeholders (grijze voorbeeldtekst) te updaten
+        function updatePlaceholders(school) {
+            const firstPhoneRow = document.querySelector('.phone-row');
+            if(firstPhoneRow) {
+                const labelInput = firstPhoneRow.querySelector('.phone-label');
+                const numberInput = firstPhoneRow.querySelector('.phone-number');
+                
+                labelInput.placeholder = 'Bv. ' + school.id;
+                numberInput.placeholder = school.phone;
+                
+                labelInput.value = '';
+                numberInput.value = school.phone;
+            }
+            document.getElementById('enterpriseNum').placeholder = "Bv. BE 0446.162.881";
+        }
+
+        function buildContactRowWithOptionalIcon({
+            showIcon,
+            iconUrl,
+            iconAlt,
+            iconSize,
+            activeColor,
+            contentHtml,
+            fontFamily,
+            textColor = '#000000',
+            paddingBottom = 4
+        }) {
+            const iconBgStyle = `background-color: ${activeColor}; border-radius: 3px;`;
+
+            if (showIcon) {
+                return `
+                        <tr>
+                            <td width="${iconSize + 6}" style="vertical-align: top; padding-top: 2px;">
+                                <img src="${iconUrl}" width="${iconSize}" height="${iconSize}" alt="${iconAlt}" style="display: block; ${iconBgStyle} border: 0; outline: none; text-decoration: none;">
+                            </td>
+                            <td style="vertical-align: top; padding-bottom: ${paddingBottom}px; color: ${textColor}; font-family: ${fontFamily};">${contentHtml}</td>
+                        </tr>`;
+            }
+
+            return `
+                        <tr>
+                            <td style="vertical-align: top; padding-bottom: ${paddingBottom}px; color: ${textColor}; font-family: ${fontFamily};">${contentHtml}</td>
+                        </tr>`;
+        }
+
+        function buildInlineContactItemWithOptionalIcon({
+            showIcon,
+            iconUrl,
+            iconAlt,
+            iconSize,
+            activeColor,
+            contentHtml
+        }) {
+            if (!showIcon) return contentHtml;
+
+            const iconBgStyle = `background-color: ${activeColor}; border-radius: 3px;`;
+            return `<img src="${iconUrl}" width="${iconSize}" height="${iconSize}" alt="${iconAlt}" style="display: inline-block; vertical-align: -2px; ${iconBgStyle} border: 0; outline: none; text-decoration: none;">&nbsp;${contentHtml}`;
+        }
+
+        // --- 3. DE TEMPLATE GENERATOR ---
+        function updateSignature() {
+            // Haal de gekozen school op
+            const schoolIndex = schoolSelect.value;
+            const school = schools[schoolIndex];
+
+            // Haal styling opties op
+            const activeColor = colorPicker.value;
+            const activeSecondaryColor = secondaryColorPicker.value;
+            const activeFont = fontSelect.value;
+            const activeTemplate = templateSelect.value;
+            const logoAlignChoice = document.querySelector('input[name="logoAlignMode"]:checked')?.value || 'auto';
+            const defaultLogoAlignmentByTemplate = {
+                '1': 'center',
+                '2': 'left',
+                '3': 'left',
+                '4': 'right',
+                '5': 'center',
+                '6': 'left'
+            };
+            const logoAlignment = logoAlignChoice === 'auto'
+                ? (defaultLogoAlignmentByTemplate[activeTemplate] || 'left')
+                : logoAlignChoice;
+            const logoAlignmentAttr = logoAlignment;
+            const logoMarginStyle = logoAlignment === 'center'
+                ? 'margin: 0 auto;'
+                : (logoAlignment === 'right'
+                    ? 'margin-left: auto; margin-right: 0;'
+                    : 'margin-left: 0; margin-right: auto;');
+            const showContactIcons = activeTemplate !== '1' && toggleContactIcons.checked;
+            const showPhoneContactIcon = showContactIcons;
+            const showLinkContactIcon = showContactIcons;
+            const showMailContactIcon = showContactIcons;
+
+            // Haal gebruikersdata op
+            const fName = document.getElementById('firstName').value || 'Voornaam';
+            const lName = document.getElementById('lastName').value || 'Achternaam';
+            const job = document.getElementById('jobTitle').value || 'Functie / Titel';
+            const dept = document.getElementById('department').value.trim();
+            const mail = document.getElementById('email').value || 'email@sgfv.be';
+            
+            // Ophalen van Social Media velden
+            const sFb = document.getElementById('socialFacebook').value.trim();
+            const sIg = document.getElementById('socialInstagram').value.trim();
+            const sLi = document.getElementById('socialLinkedin').value.trim();
+            const sX = document.getElementById('socialX').value.trim();
+            const sWa = document.getElementById('socialWhatsapp').value.trim();
+
+            // Extra velden
+            const apptLink = document.getElementById('appointmentLink').value.trim();
+            const apptText = document.getElementById('appointmentText').value.trim() || 'Boek een afspraak'; 
+            const entNum = document.getElementById('enterpriseNum').value.trim();
+            
+            // Haal de ingestelde afbeeldingen en groottes op
+            const mainLogoUrl = mainLogoSelect.value || school.logos[0].url;
+            const logoWidth = logoSizeInput.value || 160;
+            
+            const avatarUrl = avatarSelect.value || school.avatars[0].url;
+            const avatarWidth = avatarSizeInput.value || 90;
+            
+            // Formatteer afdeling/locatie
+            const deptHtml = dept ? `<br><span style="font-size: 13px; color: #555555; font-weight: normal; font-family: ${activeFont}; line-height: 18px;">${dept}</span>` : '';
+            
+            // Logica voor telefoons
+            const phoneRows = document.querySelectorAll('.phone-row');
+            let validPhones = [];
+            
+            phoneRows.forEach(row => {
+                const label = row.querySelector('.phone-label').value.trim();
+                const num = row.querySelector('.phone-number').value.trim();
+                if (num) validPhones.push({ label, num });
+            });
+
+            // Opbouwen array met aanwezige socials
+            const socialIconsArr = [];
+            if(sFb) socialIconsArr.push({ url: sFb, icon: icons.facebook, alt: 'Facebook' });
+            if(sIg) socialIconsArr.push({ url: sIg, icon: icons.instagram, alt: 'Instagram' });
+            if(sLi) socialIconsArr.push({ url: sLi, icon: icons.linkedin, alt: 'LinkedIn' });
+            if(sX)  socialIconsArr.push({ url: sX, icon: icons.x, alt: 'X (Twitter)' });
+            if(sWa) socialIconsArr.push({ url: sWa, icon: icons.whatsapp, alt: 'WhatsApp' });
+
+            let socialHtml = '';
+            let socialCenteredHtml = '';
+
+            if (socialIconsArr.length > 0) {
+                const tdString = socialIconsArr.map(s => 
+                    `<td style="padding-right: 6px;"><a href="${s.url}" target="_blank" style="text-decoration: none; display: inline-block;"><img src="${s.icon}" width="24" height="24" alt="${s.alt}" style="display: block; background-color: ${activeColor}; border-radius: 4px; border: 0; outline: none; text-decoration: none;"></a></td>`
+                ).join('');
+
+                socialHtml = `
+                    <table cellpadding="0" cellspacing="0" border="0" style="margin-top: 12px;">
+                        <tr>${tdString}</tr>
+                    </table>
+                `;
+                
+                socialCenteredHtml = `
+                    <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin-top: 12px; margin-bottom: 4px;">
+                        <tr>${tdString}</tr>
+                    </table>
+                `;
+            }
+
+            // Basis HTML strings voor herbruikbare onderdelen
+            const enterpriseHtml = entNum ? `<div style="margin-top: 4px; color: #888888; font-size: 11px; font-family: ${activeFont}; line-height: 14px;">KBO: ${entNum}</div>` : '';
+            
+            const appointmentHtml = apptLink ? `
+                <table cellpadding="0" cellspacing="0" border="0" style="margin-top: 12px;">
+                    <tr>
+                        <td align="center" style="background-color: ${activeColor}; border-radius: 4px; padding: 6px 12px;">
+                            <a href="${apptLink}" target="_blank" style="color: #ffffff; font-family: ${activeFont}; font-size: 13px; font-weight: bold; text-decoration: none; display: inline-block; line-height: 16px;">${apptText}</a>
+                        </td>
+                    </tr>
+                </table>
+            ` : '';
+
+            let htmlString = '';
+
+            // --- LAYOUT LOGICA ---
+            if (activeTemplate === '1') {
+                // TEMPLATE 1: STANDAARD (Logo onderaan)
+                
+                let phoneHtmlT1 = `<span style="color: #000000; font-size: 14px; font-family: ${activeFont};">000 00 00 00</span>`;
+                if (validPhones.length > 0) {
+                    phoneHtmlT1 = validPhones.map(p => {
+                        const cleanNum = p.num.replace(/\s/g, '');
+                        const labelHtml = p.label ? `<strong style="font-weight: 600; font-family: ${activeFont};">${p.label}:&nbsp;</strong>` : '';
+                        return `${labelHtml}<a href="tel:${cleanNum}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
+                    }).join('<br>');
+                }
+
+                htmlString = `
+<table cellpadding="0" cellspacing="0" border="0" style="font-size: 14px; font-family: ${activeFont}; color: #000000; line-height: 1.2;">
+    <tbody>
+        <tr>
+            <!-- Linker kolom: Naam en Functie -->
+            <td style="vertical-align: middle; padding-right: 15px; font-family: ${activeFont};">
+                <h2 style="margin: 0; font-size: 18px; font-weight: 600; color: #000000; font-family: ${activeFont}; line-height: 24px;">${fName} ${lName}</h2>
+                <p style="margin: 0; font-size: 14px; line-height: 22px; font-family: ${activeFont};">${job}${deptHtml}</p>
+                <div style="margin: 0; font-weight: 500; color: ${activeSecondaryColor}; font-size: 14px; line-height: 22px; font-family: ${activeFont}; white-space: nowrap;">${school.name}</div>
+                ${enterpriseHtml}
+                ${appointmentHtml}
+                ${socialHtml}
+            </td>
+            
+            <!-- Middelste kolom: Verticale lijn -->
+            <td width="1" style="border-left: 2px solid ${activeColor}; font-size: 1px; line-height: 1px;">&nbsp;</td>
+            
+            <!-- Rechter kolom: Contactgegevens -->
+            <td style="vertical-align: middle; padding-left: 15px; font-family: ${activeFont};">
+                <table cellpadding="0" cellspacing="0" border="0" style="font-size: 14px; font-family: ${activeFont}; line-height: 1.5;">
+                    <tbody>
+                        <tr>
+                            <td width="24" style="vertical-align: top; padding-top: 2px;"><img src="${icons.phone}" width="18" height="18" alt="tel" style="display: block; background-color: ${activeColor}; border-radius: 3px; border: 0; outline: none; text-decoration: none;"></td>
+                            <td style="vertical-align: top; padding-bottom: 4px; color: #000000; font-family: ${activeFont};">${phoneHtmlT1}</td>
+                        </tr>
+                        <tr>
+                            <td width="24" style="vertical-align: top; padding-top: 2px;"><img src="${icons.email}" width="18" height="18" alt="mail" style="display: block; background-color: ${activeColor}; border-radius: 3px; border: 0; outline: none; text-decoration: none;"></td>
+                            <td style="vertical-align: top; padding-bottom: 4px; font-family: ${activeFont};"><a href="mailto:${mail}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${mail}</a></td>
+                        </tr>
+                        <tr>
+                            <td width="24" style="vertical-align: top; padding-top: 2px;"><img src="${icons.website}" width="18" height="18" alt="web" style="display: block; background-color: ${activeColor}; border-radius: 3px; border: 0; outline: none; text-decoration: none;"></td>
+                            <td style="vertical-align: top; padding-bottom: 4px; font-family: ${activeFont};"><a href="https://${school.website}" target="_blank" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${school.website}</a></td>
+                        </tr>
+                        <tr>
+                            <td width="24" style="vertical-align: top; padding-top: 2px;"><img src="${icons.address}" width="18" height="18" alt="adres" style="display: block; background-color: ${activeColor}; border-radius: 3px; border: 0; outline: none; text-decoration: none;"></td>
+                            <td style="vertical-align: top; color: #000000; font-family: ${activeFont};">${school.address}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr><td colspan="3" height="15" style="font-size: 15px; line-height: 15px;">&nbsp;</td></tr>
+        <tr><td colspan="3" style="border-bottom: 2px solid ${activeColor}; font-size: 1px; line-height: 1px;">&nbsp;</td></tr>
+        <tr><td colspan="3" height="15" style="font-size: 15px; line-height: 15px;">&nbsp;</td></tr>
+        <tr>
+            <td colspan="3" align="${logoAlignmentAttr}" style="text-align: ${logoAlignmentAttr};">
+                <a href="https://${school.website}" target="_blank" style="text-decoration: none; display: inline-block; border: none; outline: none;">
+                    <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>`;
+
+            } else if (activeTemplate === '2') {
+                // TEMPLATE 2: COMPACT (Logo Links)
+                
+                let phoneHtmlT2 = `<span style="color: #000000; font-size: 13px; font-family: ${activeFont};">000 00 00 00</span>`;
+                if (validPhones.length > 0) {
+                    phoneHtmlT2 = validPhones.map(p => {
+                        const cleanNum = p.num.replace(/\s/g, '');
+                        const labelText = p.label ? `<span style="color: ${activeColor}; font-weight: bold;">${p.label} </span>` : '';
+                        return `${labelText}<a href="tel:${cleanNum}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
+                    }).join('<br>');
+                }
+                const phoneRowT2 = buildContactRowWithOptionalIcon({
+                    showIcon: showPhoneContactIcon,
+                    iconUrl: icons.phone,
+                    iconAlt: 'tel',
+                    iconSize: 16,
+                    activeColor,
+                    contentHtml: phoneHtmlT2,
+                    fontFamily: activeFont,
+                    textColor: '#000000',
+                    paddingBottom: 2
+                });
+                const mailRowT2 = buildContactRowWithOptionalIcon({
+                    showIcon: showMailContactIcon,
+                    iconUrl: icons.email,
+                    iconAlt: 'mail',
+                    iconSize: 16,
+                    activeColor,
+                    contentHtml: `<a href="mailto:${mail}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${mail}</a>`,
+                    fontFamily: activeFont,
+                    textColor: '#000000',
+                    paddingBottom: 2
+                });
+                const websiteRowT2 = buildContactRowWithOptionalIcon({
+                    showIcon: showLinkContactIcon,
+                    iconUrl: icons.website,
+                    iconAlt: 'web',
+                    iconSize: 16,
+                    activeColor,
+                    contentHtml: `<a href="https://${school.website}" target="_blank" style="text-decoration: none; color: ${activeColor}; font-family: ${activeFont}; font-weight: bold;">Naar de website &rarr;</a>`,
+                    fontFamily: activeFont,
+                    textColor: '#000000',
+                    paddingBottom: 0
+                });
+
+                htmlString = `
+<table cellpadding="0" cellspacing="0" border="0" style="font-size: 14px; font-family: ${activeFont}; color: #000000; line-height: 1.2;">
+    <tbody>
+        <tr>
+            <!-- Logo Kolom -->
+            <td align="${logoAlignmentAttr}" style="vertical-align: middle; padding-right: 20px; text-align: ${logoAlignmentAttr};">
+                <a href="https://${school.website}" target="_blank" style="text-decoration: none; display: inline-block; border: none; outline: none;">
+                    <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
+                </a>
+            </td>
+            
+            <!-- Verticale Lijn -->
+            <td width="1" style="border-left: 2px solid ${activeColor}; font-size: 1px; line-height: 1px;">&nbsp;</td>
+            
+            <!-- Gegevens Kolom -->
+            <td style="vertical-align: middle; padding-left: 20px; font-family: ${activeFont};">
+                <h2 style="margin: 0 0 2px 0; font-size: 18px; font-weight: 600; color: #000000; font-family: ${activeFont}; line-height: 24px;">${fName} ${lName}</h2>
+                <p style="margin: 0; font-size: 13px; line-height: 20px; font-family: ${activeFont}; color: #444444;">${job}${deptHtml}</p>
+                <div style="margin: 4px 0 8px 0; font-weight: bold; color: ${activeSecondaryColor}; font-size: 13px; line-height: 20px; font-family: ${activeFont};">${school.name}</div>
+                
+                <table cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; font-family: ${activeFont}; line-height: 1.6;">
+                    <tbody>
+                        ${phoneRowT2}
+                        ${mailRowT2}
+                        ${websiteRowT2}
+                    </tbody>
+                </table>
+                ${enterpriseHtml}
+                ${appointmentHtml}
+                ${socialHtml}
+            </td>
+        </tr>
+    </tbody>
+</table>`;
+
+            } else if (activeTemplate === '3') {
+                // TEMPLATE 3: MODERN (Alles onder elkaar)
+                
+                let phoneInlineHtml = `<span style="color: #000000; font-family: ${activeFont};">000 00 00 00</span>`;
+                if (validPhones.length > 0) {
+                    phoneInlineHtml = validPhones.map(p => {
+                        const cleanNum = p.num.replace(/\s/g, '');
+                        const labelText = p.label ? ` (${p.label})` : '';
+                        return `<a href="tel:${cleanNum}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}${labelText}</a>`;
+                    }).join(` <span style="color: ${activeColor}; font-weight: bold; margin: 0 4px;">&bull;</span> `);
+                }
+                const phoneItemT3 = buildInlineContactItemWithOptionalIcon({
+                    showIcon: showPhoneContactIcon,
+                    iconUrl: icons.phone,
+                    iconAlt: 'tel',
+                    iconSize: 14,
+                    activeColor,
+                    contentHtml: phoneInlineHtml
+                });
+                const mailItemT3 = buildInlineContactItemWithOptionalIcon({
+                    showIcon: showMailContactIcon,
+                    iconUrl: icons.email,
+                    iconAlt: 'mail',
+                    iconSize: 14,
+                    activeColor,
+                    contentHtml: `<a href="mailto:${mail}" style="color: #000000; text-decoration: none; font-family: ${activeFont};">${mail}</a>`
+                });
+                const websiteItemT3 = buildInlineContactItemWithOptionalIcon({
+                    showIcon: showLinkContactIcon,
+                    iconUrl: icons.website,
+                    iconAlt: 'web',
+                    iconSize: 14,
+                    activeColor,
+                    contentHtml: `<a href="https://${school.website}" target="_blank" style="color: #000000; text-decoration: none; font-family: ${activeFont};">${school.website}</a>`
+                });
+
+                htmlString = `
+<table cellpadding="0" cellspacing="0" border="0" style="font-size: 14px; font-family: ${activeFont}; color: #000000; line-height: 1.4; width: 100%; max-width: 500px;">
+    <tbody>
+        <!-- Persoonsgegevens -->
+        <tr>
+            <td style="padding-bottom: 8px; font-family: ${activeFont};">
+                <h2 style="margin: 0; font-size: 18px; font-weight: 600; color: #000000; font-family: ${activeFont}; line-height: 24px;">${fName} ${lName}</h2>
+                <p style="margin: 0; font-size: 14px; font-family: ${activeFont}; color: #444444;">${job}${deptHtml} <span style="color: ${activeColor}; font-weight: bold;">|</span> <span style="color: ${activeSecondaryColor}; font-weight: bold;">${school.name}</span></p>
+            </td>
+        </tr>
+        
+        <!-- Horizontale contactlijn -->
+        <tr>
+            <td style="padding-top: 8px; padding-bottom: 12px; border-top: 2px solid ${activeColor}; font-family: ${activeFont}; font-size: 13px;">
+                ${phoneItemT3} <span style="color: ${activeColor}; font-weight: bold; margin: 0 4px;">&bull;</span> 
+                ${mailItemT3} <span style="color: ${activeColor}; font-weight: bold; margin: 0 4px;">&bull;</span> 
+                ${websiteItemT3}
+            </td>
+        </tr>
+        
+        <!-- Afspraak knop (Indien ingevuld) -->
+        ${apptLink ? `
+        <tr>
+            <td style="padding-bottom: 12px; font-family: ${activeFont};">
+                <a href="${apptLink}" target="_blank" style="background-color: ${activeColor}; color: #ffffff; padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; text-decoration: none; display: inline-block;">${apptText}</a>
+            </td>
+        </tr>
+        ` : ''}
+
+        <!-- Socials -->
+        ${socialHtml ? `
+        <tr>
+            <td style="padding-bottom: 12px;">
+                ${socialHtml}
+            </td>
+        </tr>
+        ` : ''}
+
+        <!-- Logo en KBO -->
+        <tr>
+            <td align="${logoAlignmentAttr}" style="padding-top: 4px; font-family: ${activeFont}; text-align: ${logoAlignmentAttr};">
+                <a href="https://${school.website}" target="_blank" style="text-decoration: none; display: inline-block; border: none; outline: none;">
+                    <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
+                </a>
+                ${enterpriseHtml}
+            </td>
+        </tr>
+    </tbody>
+</table>`;
+            } else if (activeTemplate === '4') {
+                // TEMPLATE 4: CORPORATE (Logo Rechts)
+                
+                let phoneHtmlT4 = `<span style="color: #000000; font-size: 13px; font-family: ${activeFont};">000 00 00 00</span>`;
+                if (validPhones.length > 0) {
+                    phoneHtmlT4 = validPhones.map(p => {
+                        const cleanNum = p.num.replace(/\s/g, '');
+                        const labelText = p.label ? `<span style="color: ${activeColor}; font-weight: bold;">${p.label} </span>` : '';
+                        return `${labelText}<a href="tel:${cleanNum}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
+                    }).join('<br>');
+                }
+                const phoneRowT4 = buildContactRowWithOptionalIcon({
+                    showIcon: showPhoneContactIcon,
+                    iconUrl: icons.phone,
+                    iconAlt: 'tel',
+                    iconSize: 16,
+                    activeColor,
+                    contentHtml: phoneHtmlT4,
+                    fontFamily: activeFont,
+                    textColor: '#000000',
+                    paddingBottom: 2
+                });
+                const mailRowT4 = buildContactRowWithOptionalIcon({
+                    showIcon: showMailContactIcon,
+                    iconUrl: icons.email,
+                    iconAlt: 'mail',
+                    iconSize: 16,
+                    activeColor,
+                    contentHtml: `<a href="mailto:${mail}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${mail}</a>`,
+                    fontFamily: activeFont,
+                    textColor: '#000000',
+                    paddingBottom: 2
+                });
+                const websiteRowT4 = buildContactRowWithOptionalIcon({
+                    showIcon: showLinkContactIcon,
+                    iconUrl: icons.website,
+                    iconAlt: 'web',
+                    iconSize: 16,
+                    activeColor,
+                    contentHtml: `<a href="https://${school.website}" target="_blank" style="text-decoration: none; color: ${activeColor}; font-family: ${activeFont}; font-weight: bold;">Naar de website &rarr;</a>`,
+                    fontFamily: activeFont,
+                    textColor: '#000000',
+                    paddingBottom: 0
+                });
+
+                htmlString = `
+<table cellpadding="0" cellspacing="0" border="0" style="font-size: 14px; font-family: ${activeFont}; color: #000000; line-height: 1.2;">
+    <tbody>
+        <tr>
+            <!-- Gegevens Kolom (Links) -->
+            <td style="vertical-align: middle; padding-right: 20px; font-family: ${activeFont};">
+                <h2 style="margin: 0 0 2px 0; font-size: 18px; font-weight: 600; color: #000000; font-family: ${activeFont}; line-height: 24px;">${fName} ${lName}</h2>
+                <p style="margin: 0; font-size: 13px; line-height: 20px; font-family: ${activeFont}; color: #444444;">${job}${deptHtml}</p>
+                <div style="margin: 4px 0 8px 0; font-weight: bold; color: ${activeSecondaryColor}; font-size: 13px; line-height: 20px; font-family: ${activeFont};">${school.name}</div>
+                
+                <table cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; font-family: ${activeFont}; line-height: 1.6;">
+                    <tbody>
+                        ${phoneRowT4}
+                        ${mailRowT4}
+                        ${websiteRowT4}
+                    </tbody>
+                </table>
+                ${enterpriseHtml}
+                ${appointmentHtml}
+                ${socialHtml}
+            </td>
+            
+            <!-- Verticale Lijn -->
+            <td width="1" style="border-left: 2px solid ${activeColor}; font-size: 1px; line-height: 1px;">&nbsp;</td>
+            
+            <!-- Logo Kolom (Rechts) -->
+            <td align="${logoAlignmentAttr}" style="vertical-align: middle; padding-left: 20px; text-align: ${logoAlignmentAttr};">
+                <a href="https://${school.website}" target="_blank" style="text-decoration: none; display: inline-block; border: none; outline: none;">
+                    <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>`;
+
+            } else if (activeTemplate === '5') {
+                // TEMPLATE 5: CENTRAAL (Alles gecentreerd)
+                
+                let phoneInlineHtmlT5 = `<span style="color: #000000; font-family: ${activeFont};">000 00 00 00</span>`;
+                if (validPhones.length > 0) {
+                    phoneInlineHtmlT5 = validPhones.map(p => {
+                        const cleanNum = p.num.replace(/\s/g, '');
+                        const labelText = p.label ? ` (${p.label})` : '';
+                        return `<a href="tel:${cleanNum}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}${labelText}</a>`;
+                    }).join(` <span style="color: ${activeColor}; font-weight: bold; margin: 0 6px;">|</span> `);
+                }
+                const phoneItemT5 = buildInlineContactItemWithOptionalIcon({
+                    showIcon: showPhoneContactIcon,
+                    iconUrl: icons.phone,
+                    iconAlt: 'tel',
+                    iconSize: 14,
+                    activeColor,
+                    contentHtml: phoneInlineHtmlT5
+                });
+                const mailItemT5 = buildInlineContactItemWithOptionalIcon({
+                    showIcon: showMailContactIcon,
+                    iconUrl: icons.email,
+                    iconAlt: 'mail',
+                    iconSize: 14,
+                    activeColor,
+                    contentHtml: `<a href="mailto:${mail}" style="color: #000000; text-decoration: none; font-family: ${activeFont};">${mail}</a>`
+                });
+                const websiteItemT5 = buildInlineContactItemWithOptionalIcon({
+                    showIcon: showLinkContactIcon,
+                    iconUrl: icons.website,
+                    iconAlt: 'web',
+                    iconSize: 14,
+                    activeColor,
+                    contentHtml: `<a href="https://${school.website}" target="_blank" style="color: #000000; text-decoration: none; font-family: ${activeFont};">${school.website}</a>`
+                });
+
+                const appointmentHtmlT5 = apptLink ? `
+                    <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin-top: 12px; margin-bottom: 4px;">
+                        <tr>
+                            <td align="center" style="background-color: ${activeColor}; border-radius: 4px; padding: 6px 16px;">
+                                <a href="${apptLink}" target="_blank" style="color: #ffffff; font-family: ${activeFont}; font-size: 13px; font-weight: bold; text-decoration: none; display: inline-block; line-height: 16px;">${apptText}</a>
+                            </td>
+                        </tr>
+                    </table>
+                ` : '';
+                
+                const enterpriseHtmlT5 = entNum ? `<div style="margin-top: 8px; color: #888888; font-size: 11px; font-family: ${activeFont}; line-height: 14px; text-align: center;">KBO: ${entNum}</div>` : '';
+
+                htmlString = `
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="font-size: 14px; font-family: ${activeFont}; color: #000000; line-height: 1.4; max-width: 500px; text-align: center;">
+    <tbody>
+        <!-- Logo Top -->
+        <tr>
+            <td align="${logoAlignmentAttr}" style="padding-bottom: 12px; text-align: ${logoAlignmentAttr};">
+                <a href="https://${school.website}" target="_blank" style="text-decoration: none; display: inline-block; border: none; outline: none;">
+                    <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
+                </a>
+            </td>
+        </tr>
+        
+        <!-- Horizontale Lijn -->
+        <tr>
+            <td align="center">
+                <table cellpadding="0" cellspacing="0" border="0" width="80%" align="center">
+                    <tr><td style="border-top: 2px solid ${activeColor}; font-size: 1px; line-height: 1px;">&nbsp;</td></tr>
+                </table>
+            </td>
+        </tr>
+        
+        <!-- Persoonsgegevens -->
+        <tr>
+            <td align="center" style="padding-top: 10px; padding-bottom: 6px; font-family: ${activeFont};">
+                <h2 style="margin: 0; font-size: 18px; font-weight: 600; color: #000000; font-family: ${activeFont}; line-height: 24px;">${fName} ${lName}</h2>
+                <p style="margin: 0; font-size: 14px; font-family: ${activeFont}; color: #444444;">${job}${deptHtml}</p>
+                <div style="margin: 2px 0 0 0; font-weight: bold; color: ${activeSecondaryColor}; font-size: 14px; font-family: ${activeFont};">${school.name}</div>
+            </td>
+        </tr>
+        
+        <!-- Contactgegevens inline -->
+        <tr>
+            <td align="center" style="padding-top: 4px; padding-bottom: 8px; font-family: ${activeFont}; font-size: 13px;">
+                ${phoneItemT5} <br>
+                ${mailItemT5} <span style="color: ${activeColor}; font-weight: bold; margin: 0 6px;">|</span> 
+                ${websiteItemT5}
+            </td>
+        </tr>
+        
+        <!-- Optionele extra's (Knop, Socials & KBO) -->
+        <tr>
+            <td align="center" style="font-family: ${activeFont};">
+                ${appointmentHtmlT5}
+                ${socialCenteredHtml}
+                ${enterpriseHtmlT5}
+            </td>
+        </tr>
+    </tbody>
+</table>`;
+            } else if (activeTemplate === '6') {
+                // TEMPLATE 6: AVATAR / UIL (Rond/Vierkant + Schoollogo onderaan)
+                
+                let phoneHtmlT6 = `<span style="color: #000000; font-size: 13px; font-family: ${activeFont};">000 00 00 00</span>`;
+                if (validPhones.length > 0) {
+                    phoneHtmlT6 = validPhones.map(p => {
+                        const cleanNum = p.num.replace(/\s/g, '');
+                        return `<a href="tel:${cleanNum}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
+                    }).join('<br>');
+                }
+                const phoneRowT6 = buildContactRowWithOptionalIcon({
+                    showIcon: showPhoneContactIcon,
+                    iconUrl: icons.phone,
+                    iconAlt: 'tel',
+                    iconSize: 16,
+                    activeColor,
+                    contentHtml: phoneHtmlT6,
+                    fontFamily: activeFont,
+                    textColor: '#000000',
+                    paddingBottom: 2
+                });
+                const mailRowT6 = buildContactRowWithOptionalIcon({
+                    showIcon: showMailContactIcon,
+                    iconUrl: icons.email,
+                    iconAlt: 'mail',
+                    iconSize: 16,
+                    activeColor,
+                    contentHtml: `<a href="mailto:${mail}" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${mail}</a>`,
+                    fontFamily: activeFont,
+                    textColor: '#000000',
+                    paddingBottom: 2
+                });
+                const websiteRowT6 = buildContactRowWithOptionalIcon({
+                    showIcon: showLinkContactIcon,
+                    iconUrl: icons.website,
+                    iconAlt: 'web',
+                    iconSize: 16,
+                    activeColor,
+                    contentHtml: `<a href="https://${school.website}" target="_blank" style="text-decoration: none; color: #000000; font-family: ${activeFont};">${school.website}</a>`,
+                    fontFamily: activeFont,
+                    textColor: '#000000',
+                    paddingBottom: 2
+                });
+                const addressRowT6 = buildContactRowWithOptionalIcon({
+                    showIcon: true,
+                    iconUrl: icons.address,
+                    iconAlt: 'adres',
+                    iconSize: 16,
+                    activeColor,
+                    contentHtml: school.address,
+                    fontFamily: activeFont,
+                    textColor: '#000000',
+                    paddingBottom: 0
+                });
+
+                // Opmerking: geen hardcoded height="" in de <img> tag meer voor de avatar om stretchen in Outlook tegen te gaan!
+                htmlString = `
+<table cellpadding="0" cellspacing="0" border="0" style="font-size: 14px; font-family: ${activeFont}; color: #000000; line-height: 1.2; width: 100%; max-width: 600px;">
+    <tbody>
+        <tr>
+            <td style="padding-bottom: 15px;">
+                <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <tr>
+                        <!-- Avatar / Foto -->
+                        <td width="${avatarWidth}" style="vertical-align: middle; padding-right: 15px;">
+                            <img src="${avatarUrl}" alt="Profielfoto" width="${avatarWidth}" style="display: block; border-radius: 50%; width: ${avatarWidth}px; height: auto; border: none; outline: none; text-decoration: none;">
+                        </td>
+                        <!-- Naam & Functie -->
+                        <td style="vertical-align: middle; padding-right: 15px; font-family: ${activeFont};">
+                            <h2 style="margin: 0 0 4px 0; font-size: 18px; font-weight: 700; color: #000000; font-family: ${activeFont}; line-height: 22px;">${fName} ${lName}</h2>
+                            <p style="margin: 0 0 2px 0; font-size: 14px; font-family: ${activeFont}; color: #000000;">${job}</p>
+                            <p style="margin: 0; font-size: 14px; font-family: ${activeFont}; color: ${activeSecondaryColor}; font-weight: bold;">${school.name}<span style="font-weight: normal; color: #000000;">${deptHtml}</span></p>
+                        </td>
+                        <!-- Verticale Lijn -->
+                        <td width="1" style="border-left: 2px solid ${activeColor}; font-size: 1px; line-height: 1px;">&nbsp;</td>
+                        <!-- Contactgegevens -->
+                        <td style="vertical-align: middle; padding-left: 15px; font-family: ${activeFont};">
+                            <table cellpadding="0" cellspacing="0" border="0" style="font-size: 13px; font-family: ${activeFont}; line-height: 1.6;">
+                                <tbody>
+                                    ${phoneRowT6}
+                                    ${mailRowT6}
+                                    ${websiteRowT6}
+                                    ${addressRowT6}
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        
+        <!-- Horizontale Lijn -->
+        <tr><td height="1" style="border-top: 1px solid ${activeColor}; font-size: 1px; line-height: 1px;">&nbsp;</td></tr>
+        
+        <!-- Bottom Section: School Logo & Socials -->
+        <tr>
+            <td style="padding-top: 15px;">
+                <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <tr>
+                        <td align="${logoAlignmentAttr}" style="vertical-align: middle; text-align: ${logoAlignmentAttr};">
+                            <a href="https://${school.website}" target="_blank" style="text-decoration: none; display: inline-block; border: none; outline: none;">
+                                <img src="${mainLogoUrl}" alt="Logo ${school.name}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none;">
+                            </a>
+                            ${enterpriseHtml}
+                            ${appointmentHtml}
+                        </td>
+                        <td align="right" style="vertical-align: bottom;">
+                            ${socialHtml ? socialHtml.replace('margin-top: 12px;', 'margin-top: 0;') : ''}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>`;
+            }
+            
+            previewContainer.innerHTML = htmlString;
+        }
+
+        // --- 4. EVENT LISTENERS ---
+        // Voer de update functie uit bij elke toetsaanslag in de normale tekstvelden
+        inputs.forEach(input => {
+            if (input.id !== 'brandColorText' && input.id !== 'brandColorPicker' && input.id !== 'secondaryColorText' && input.id !== 'secondaryColorPicker') {
+                input.addEventListener('input', updateSignature);
+            }
+        });
+        
+        // Luister naar dropdown veranderingen
+        schoolSelect.addEventListener('change', (e) => {
+            const school = schools[e.target.value];
+            colorPicker.value = school.color;
+            colorText.value = school.color.toUpperCase();
+            
+            // Zet secundaire kleur (of val terug op basiskleur)
+            const secColor = school.secondaryColor || school.color;
+            secondaryColorPicker.value = secColor;
+            secondaryColorText.value = secColor.toUpperCase();
+            
+            populateMainLogos(school); // Laad de basislogo's in
+            populateAvatars(school); // Laad de avatars in
+            updatePlaceholders(school); 
+            updateSignature();
+        });
+
+        fontSelect.addEventListener('change', updateSignature);
+        
+        // Let op de verandering in Template om de dropdown zichtbaar/onzichtbaar te maken
+        templateSelect.addEventListener('change', () => {
+            toggleTemplateImageControls();
+            updateSignature();
+        });
+
+        // Reageer op veranderingen in logo/avatar dropdowns en grootte
+        mainLogoSelect.addEventListener('change', updateSignature);
+        logoAlignInputs.forEach((input) => input.addEventListener('change', updateSignature));
+        avatarSelect.addEventListener('change', updateSignature);
+        toggleContactIcons.addEventListener('change', updateSignature);
+        logoSizeInput.addEventListener('input', updateSignature);
+        avatarSizeInput.addEventListener('input', updateSignature);
+
+        // Koppel de visuele kleurenkiezer aan het HEX tekstveld
+        colorPicker.addEventListener('input', (e) => {
+            colorText.value = e.target.value.toUpperCase();
+            updateSignature();
+        });
+
+        colorText.addEventListener('input', (e) => {
+            let val = e.target.value;
+            if (val.match(/^#[0-9A-Fa-f]{6}$/)) {
+                colorPicker.value = val;
+                updateSignature();
+            }
+        });
+
+        // Event listeners voor secundaire kleur
+        secondaryColorPicker.addEventListener('input', (e) => {
+            secondaryColorText.value = e.target.value.toUpperCase();
+            updateSignature();
+        });
+
+        secondaryColorText.addEventListener('input', (e) => {
+            let val = e.target.value;
+            if (val.match(/^#[0-9A-Fa-f]{6}$/)) {
+                secondaryColorPicker.value = val;
+                updateSignature();
+            }
+        });
+
+        // Genereer de eerste keer bij het laden van de pagina
+        updateSignature();
+
+        // --- 5. KOPIEER FUNCTIONALITEIT ---
+        
+        // Hulpfunctie voor succesmeldingen
+        function showSuccessMessage(text) {
+            const successMsg = document.getElementById('successMsg');
+            document.getElementById('successText').textContent = text;
+            successMsg.classList.remove('hidden');
+            setTimeout(() => {
+                successMsg.classList.add('hidden');
+            }, 4000);
+        }
+
+        // Knoppen: Visueel kopiëren (Voor handmatig plakken in Outlook/Gmail)
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const previewContent = document.getElementById('signaturePreview');
+            const range = document.createRange();
+            range.selectNode(previewContent.firstElementChild);
+            window.getSelection().removeAllRanges(); 
+            window.getSelection().addRange(range);   
+            
+            try {
+                document.execCommand('copy');
+                showSuccessMessage(' De handtekening is gekopieerd. Je kunt deze nu in je e-mailprogramma plakken.');
+            } catch (err) {
+                alert('Oeps, het kopiëren is mislukt. Je kunt de handtekening ook handmatig selecteren en Ctrl+C drukken.');
+            }
+            window.getSelection().removeAllRanges();
+        });
+
+        // Knop: HTML Code kopiëren (Voor beheersystemen)
+        document.getElementById('copyHtmlBtn').addEventListener('click', function() {
+            const previewContent = document.getElementById('signaturePreview');
+            const htmlContent = previewContent.innerHTML.trim();
+            
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = htmlContent;
+            tempTextArea.style.position = 'fixed';
+            tempTextArea.style.top = '0';
+            tempTextArea.style.left = '0';
+            tempTextArea.style.opacity = '0';
+            
+            document.body.appendChild(tempTextArea);
+            tempTextArea.focus();
+            tempTextArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showSuccessMessage(' De HTML-code is gekopieerd naar je klembord!');
+            } catch (err) {
+                alert('Kopiëren van HTML mislukt.');
+            }
+            
+            document.body.removeChild(tempTextArea);
+        });
+
+    </script>
+</body>
+</html>
