@@ -160,60 +160,179 @@
                         </button>
                     </div>
 
-                    <!-- Sectie: Basisgegevens overschrijven -->
-                    <details class="group rounded-2xl border border-slate-200 bg-slate-50 shadow-sm">
-                        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4">
-                            <div>
-                                <h3 class="text-sm font-semibold text-slate-800">Basisgegevens Overschrijven</h3>
-                                <p class="mt-1 text-xs text-slate-500">Alleen invullen als deze handtekening moet afwijken van de standaard school- of locatiegegevens.</p>
-                            </div>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-slate-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </summary>
-                        <div class="space-y-4 border-t border-slate-200 px-5 py-4">
-                            <div>
-                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">School / Locatienaam (Opt.)</label>
-                                <input type="text" id="schoolNameOverride" placeholder="Overschrijf de naam van de geselecteerde school of locatie" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Website (Opt.)</label>
-                                <input type="url" id="schoolWebsiteOverride" placeholder="https://..." class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Adres (Opt.)</label>
-                                <input type="text" id="schoolAddressOverride" placeholder="Overschrijf het standaardadres voor deze handtekening" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700">
-                            </div>
-                        </div>
-                    </details>
-
-                    <!-- Sectie: Social Media -->
+                    <!-- Sectie: Zichtbaarheid -->
                     <div class="space-y-4">
-                        <h3 class="text-sm font-semibold text-slate-800 border-b border-slate-100 pb-2">Social Media (Optioneel)</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Facebook</label>
-                                <input type="url" id="socialFacebook" placeholder="https://facebook.com/..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                        <div class="border-b border-slate-100 pb-2">
+                            <h3 class="text-sm font-semibold text-slate-800">Blokken in handtekening</h3>
+                            <p class="mt-1 text-xs text-slate-500">Zet een blok aan om extra velden open te klappen. Lege velden blijven automatisch verborgen in de handtekening.</p>
+                        </div>
+                        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            <div id="schoolNameCard" data-expanded="false" class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all">
+                                <div class="flex items-start justify-between gap-4">
+                                    <label for="toggleSchoolName" class="cursor-pointer">
+                                        <div class="text-sm font-semibold text-slate-800">School / locatie naam</div>
+                                        <p class="mt-1 text-xs text-slate-500">Gebruik een aangepaste school- of locatienaam voor deze handtekening.</p>
+                                    </label>
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        <button type="button" id="schoolNameExpandBtn" aria-controls="schoolNamePanel" aria-expanded="false" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-all hover:border-slate-300 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </button>
+                                        <input id="toggleSchoolName" type="checkbox" class="mt-1 h-4 w-4 shrink-0 accent-emerald-600">
+                                    </div>
+                                </div>
+                                <div id="schoolNamePanel" class="hidden mt-4 border-t border-slate-200 pt-4">
+                                    <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">School / Locatienaam</label>
+                                    <input type="text" id="schoolNameOverride" placeholder="Overschrijf de naam van de geselecteerde school of locatie" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700">
+                                    <p class="mt-2 text-xs text-slate-500">Laat leeg om de standaardnaam van de gekozen school te gebruiken.</p>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Instagram</label>
-                                <input type="url" id="socialInstagram" placeholder="https://instagram.com/..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                            <div id="schoolWebsiteCard" data-expanded="false" class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all">
+                                <div class="flex items-start justify-between gap-4">
+                                    <label for="toggleSchoolWebsite" class="cursor-pointer">
+                                        <div class="flex items-center gap-2">
+                                            <div class="text-sm font-semibold text-slate-800">Schoolwebsite</div>
+                                            <span class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700">Standaard uit</span>
+                                        </div>
+                                        <p class="mt-1 text-xs text-slate-500">Toont de website en gebruikt die ook achter het schoollogo.</p>
+                                    </label>
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        <button type="button" id="schoolWebsiteExpandBtn" aria-controls="schoolWebsitePanel" aria-expanded="false" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-all hover:border-slate-300 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </button>
+                                        <input id="toggleSchoolWebsite" type="checkbox" class="mt-1 h-4 w-4 shrink-0 accent-emerald-600">
+                                    </div>
+                                </div>
+                                <div id="schoolWebsitePanel" class="hidden mt-4 border-t border-slate-200 pt-4">
+                                    <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Website Overschrijven</label>
+                                    <input type="url" id="schoolWebsiteOverride" placeholder="https://..." class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                                    <p class="mt-2 text-xs text-slate-500">Laat leeg om de standaardwebsite van de gekozen school te gebruiken.</p>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">LinkedIn</label>
-                                <input type="url" id="socialLinkedin" placeholder="https://linkedin.com/..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                            <div id="schoolAddressCard" data-expanded="false" class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all">
+                                <div class="flex items-start justify-between gap-4">
+                                    <label for="toggleSchoolAddress" class="cursor-pointer">
+                                        <div class="text-sm font-semibold text-slate-800">Adres</div>
+                                        <p class="mt-1 text-xs text-slate-500">Toon het adres waar de gekozen template dat ondersteunt.</p>
+                                    </label>
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        <button type="button" id="schoolAddressExpandBtn" aria-controls="schoolAddressPanel" aria-expanded="false" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-all hover:border-slate-300 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </button>
+                                        <input id="toggleSchoolAddress" type="checkbox" checked class="mt-1 h-4 w-4 shrink-0 accent-emerald-600">
+                                    </div>
+                                </div>
+                                <div id="schoolAddressPanel" class="hidden mt-4 border-t border-slate-200 pt-4">
+                                    <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Adres Overschrijven</label>
+                                    <input type="text" id="schoolAddressOverride" placeholder="Overschrijf het standaardadres voor deze handtekening" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700">
+                                    <p class="mt-2 text-xs text-slate-500">Laat leeg om het standaardadres van de gekozen school te gebruiken.</p>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">X (Twitter)</label>
-                                <input type="url" id="socialX" placeholder="https://x.com/..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                            <div id="enterpriseCard" data-expanded="false" class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all">
+                                <div class="flex items-start justify-between gap-4">
+                                    <label for="toggleEnterprise" class="cursor-pointer">
+                                        <div class="text-sm font-semibold text-slate-800">Ondernemingsnummer</div>
+                                        <p class="mt-1 text-xs text-slate-500">Toon het KBO-nummer als dit voor deze handtekening nodig is.</p>
+                                    </label>
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        <button type="button" id="enterpriseExpandBtn" aria-controls="enterprisePanel" aria-expanded="false" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-all hover:border-slate-300 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </button>
+                                        <input id="toggleEnterprise" type="checkbox" checked class="mt-1 h-4 w-4 shrink-0 accent-emerald-600">
+                                    </div>
+                                </div>
+                                <div id="enterprisePanel" class="hidden mt-4 border-t border-slate-200 pt-4">
+                                    <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Ondernemingsnr.</label>
+                                    <input type="text" id="enterpriseNum" value="0446.162.881" placeholder="Bv. BE 0446.162.881" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                                </div>
                             </div>
-                            <div class="sm:col-span-2">
-                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">WhatsApp (Link)</label>
-                                <input type="url" id="socialWhatsapp" placeholder="https://wa.me/324..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                            <div id="socialsCard" data-expanded="false" class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all sm:col-span-2">
+                                <div class="flex items-start justify-between gap-4">
+                                    <label for="toggleSocials" class="cursor-pointer">
+                                        <div class="text-sm font-semibold text-slate-800">Social media</div>
+                                        <p class="mt-1 text-xs text-slate-500">Toon alleen de sociale kanalen die je hieronder invult.</p>
+                                    </label>
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        <button type="button" id="socialsExpandBtn" aria-controls="socialsPanel" aria-expanded="false" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-all hover:border-slate-300 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </button>
+                                        <input id="toggleSocials" type="checkbox" class="mt-1 h-4 w-4 shrink-0 accent-emerald-600">
+                                    </div>
+                                </div>
+                                <div id="socialsPanel" class="hidden mt-4 border-t border-slate-200 pt-4">
+                                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        <div>
+                                            <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Facebook</label>
+                                            <input type="url" id="socialFacebook" placeholder="https://facebook.com/..." class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Instagram</label>
+                                            <input type="url" id="socialInstagram" placeholder="https://instagram.com/..." class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">LinkedIn</label>
+                                            <input type="url" id="socialLinkedin" placeholder="https://linkedin.com/..." class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">X (Twitter)</label>
+                                            <input type="url" id="socialX" placeholder="https://x.com/..." class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                                        </div>
+                                        <div class="sm:col-span-2">
+                                            <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">WhatsApp (Link)</label>
+                                            <input type="url" id="socialWhatsapp" placeholder="https://wa.me/324..." class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="appointmentCard" data-expanded="false" class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all sm:col-span-2">
+                                <div class="flex items-start justify-between gap-4">
+                                    <label for="toggleAppointment" class="cursor-pointer">
+                                        <div class="text-sm font-semibold text-slate-800">Afspraakknop</div>
+                                        <p class="mt-1 text-xs text-slate-500">Voeg een knop toe naar bijvoorbeeld je Google Calendar-boekingspagina.</p>
+                                    </label>
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        <button type="button" id="appointmentExpandBtn" aria-controls="appointmentPanel" aria-expanded="false" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-all hover:border-slate-300 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </button>
+                                        <input id="toggleAppointment" type="checkbox" class="mt-1 h-4 w-4 shrink-0 accent-emerald-600">
+                                    </div>
+                                </div>
+                                <div id="appointmentPanel" class="hidden mt-4 border-t border-slate-200 pt-4">
+                                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        <div>
+                                            <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Link Naar Boekingspagina</label>
+                                            <input type="url" id="appointmentLink" placeholder="https://..." class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Knop Tekst</label>
+                                            <input type="text" id="appointmentText" placeholder="Boek een afspraak" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="contactIconsContainer" class="hidden rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all">
+                                <div class="flex items-start justify-between gap-4">
+                                    <label for="toggleContactIcons" class="cursor-pointer">
+                                        <div class="text-sm font-semibold text-slate-800">Contacticoontjes</div>
+                                        <p class="mt-1 text-xs text-slate-500">Alleen voor templates 2 tot en met 6.</p>
+                                    </label>
+                                    <input id="toggleContactIcons" type="checkbox" checked class="mt-1 h-4 w-4 shrink-0 accent-emerald-600">
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- NIEUWE SECTIE: Afbeeldingen & Logo's -->
                     <div class="space-y-4">
                         <h3 class="text-sm font-semibold text-slate-800 border-b border-slate-100 pb-2">Afbeeldingen & Logo's</h3>
@@ -277,38 +396,6 @@
                                 <label class="block text-xs font-bold tracking-wide text-emerald-600 uppercase mb-1.5 ml-1" title="Breedte van de avatar in pixels">Grootte (px)</label>
                                 <input type="number" id="avatarSize" value="90" min="30" max="200" class="w-full px-4 py-2.5 bg-emerald-50 border border-emerald-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-emerald-800 text-sm">
                             </div>
-                        </div>
-
-                        <!-- CONTACT ICON TOGGLE (Templates 2 t.e.m. 6) -->
-                        <div id="contactIconsContainer" class="hidden space-y-2">
-                            <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase ml-1">Contacticoontjes (Templates 2-6)</label>
-                            <div class="grid grid-cols-1 sm:grid-cols-1 gap-2">
-                                <label class="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 cursor-pointer w-fit">
-                                    <input id="toggleContactIcons" type="checkbox" checked class="accent-emerald-600">
-                                    <span>Toon contacticoontjes</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Sectie: Extra's -->
-                    <div class="space-y-4">
-                        <h3 class="text-sm font-semibold text-slate-800 border-b border-slate-100 pb-2">Extra Opties</h3>
-                        
-                        <div class="flex gap-4">
-                            <div class="w-1/2">
-                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Knop Link (Opt.)</label>
-                                <input type="url" id="appointmentLink" placeholder="https://calendly.com/..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
-                            </div>
-                            <div class="w-1/2">
-                                <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Knop Tekst</label>
-                                <input type="text" id="appointmentText" placeholder="Boek een afspraak" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold tracking-wide text-slate-500 uppercase mb-1.5 ml-1">Ondernemingsnr. (Opt.)</label>
-                            <input type="text" id="enterpriseNum" value="0446.162.881" placeholder="Bv. BE 0446.162.881" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-slate-700 text-sm">
                         </div>
                     </div>
 
@@ -644,9 +731,53 @@
         const avatarSizeInput = document.getElementById('avatarSize');
         const contactIconsContainer = document.getElementById('contactIconsContainer');
         const toggleContactIcons = document.getElementById('toggleContactIcons');
+        const toggleSchoolName = document.getElementById('toggleSchoolName');
+        const toggleSchoolWebsite = document.getElementById('toggleSchoolWebsite');
+        const toggleSchoolAddress = document.getElementById('toggleSchoolAddress');
+        const toggleSocials = document.getElementById('toggleSocials');
+        const toggleAppointment = document.getElementById('toggleAppointment');
+        const toggleEnterprise = document.getElementById('toggleEnterprise');
         const schoolNameOverrideInput = document.getElementById('schoolNameOverride');
         const schoolWebsiteOverrideInput = document.getElementById('schoolWebsiteOverride');
         const schoolAddressOverrideInput = document.getElementById('schoolAddressOverride');
+        const optionalPanelConfigs = [
+            {
+                toggle: toggleSchoolName,
+                panel: document.getElementById('schoolNamePanel'),
+                card: document.getElementById('schoolNameCard'),
+                button: document.getElementById('schoolNameExpandBtn')
+            },
+            {
+                toggle: toggleSchoolWebsite,
+                panel: document.getElementById('schoolWebsitePanel'),
+                card: document.getElementById('schoolWebsiteCard'),
+                button: document.getElementById('schoolWebsiteExpandBtn')
+            },
+            {
+                toggle: toggleSchoolAddress,
+                panel: document.getElementById('schoolAddressPanel'),
+                card: document.getElementById('schoolAddressCard'),
+                button: document.getElementById('schoolAddressExpandBtn')
+            },
+            {
+                toggle: toggleSocials,
+                panel: document.getElementById('socialsPanel'),
+                card: document.getElementById('socialsCard'),
+                button: document.getElementById('socialsExpandBtn')
+            },
+            {
+                toggle: toggleAppointment,
+                panel: document.getElementById('appointmentPanel'),
+                card: document.getElementById('appointmentCard'),
+                button: document.getElementById('appointmentExpandBtn')
+            },
+            {
+                toggle: toggleEnterprise,
+                panel: document.getElementById('enterprisePanel'),
+                card: document.getElementById('enterpriseCard'),
+                button: document.getElementById('enterpriseExpandBtn')
+            }
+        ];
 
         // Functionaliteit om extra telefoonvelden toe te voegen
         addPhoneBtn.addEventListener('click', () => {
@@ -712,6 +843,29 @@
             }
         }
 
+        function toggleOptionalPanels() {
+            optionalPanelConfigs.forEach(({ toggle, panel, card, button }) => {
+                const isEnabled = toggle.checked;
+                const isExpanded = isEnabled && card.dataset.expanded === 'true';
+                const icon = button.querySelector('svg');
+
+                panel.classList.toggle('hidden', !isExpanded);
+                card.classList.toggle('border-emerald-300', isEnabled);
+                card.classList.toggle('bg-emerald-50', isEnabled);
+                card.classList.toggle('border-slate-200', !isEnabled);
+                card.classList.toggle('bg-slate-50', !isEnabled);
+
+                button.disabled = !isEnabled;
+                button.setAttribute('aria-expanded', String(isExpanded));
+                button.classList.toggle('border-emerald-200', isEnabled);
+                button.classList.toggle('bg-emerald-100', isEnabled);
+                button.classList.toggle('text-emerald-700', isEnabled);
+                button.classList.toggle('bg-white', !isEnabled);
+                button.classList.toggle('text-slate-500', !isEnabled);
+                icon.classList.toggle('rotate-90', isExpanded);
+            });
+        }
+
         // Set initiële kleur, placeholders en afbeeldingen
         colorPicker.value = schools[0].color;
         colorText.value = schools[0].color.toUpperCase();
@@ -724,6 +878,7 @@
         populateAvatars(schools[0]);
         toggleTemplateImageControls();
         updatePlaceholders(schools[0]);
+        toggleOptionalPanels();
 
         // Hulpfunctie om placeholders (grijze voorbeeldtekst) te updaten
         function updatePlaceholders(school) {
@@ -905,7 +1060,7 @@
             const mailInput = document.getElementById('email').value;
             const mail = sanitizeEmail(mailInput) || 'email@sgfv.be';
 
-            const schoolNameRaw = schoolNameOverrideInput.value.trim() || String(school.name ?? '').trim() || 'School / locatie';
+            const schoolNameRaw = (toggleSchoolName.checked ? schoolNameOverrideInput.value.trim() : '') || String(school.name ?? '').trim() || 'School / locatie';
             const schoolName = escapeHtml(schoolNameRaw);
             const schoolWebsiteRaw = schoolWebsiteOverrideInput.value.trim() || String(school.website ?? '').trim();
             const schoolWebsiteUrl = normalizeHttpsUrl(schoolWebsiteRaw);
@@ -915,6 +1070,8 @@
             const schoolAddressRaw = schoolAddressOverrideInput.value.trim() || String(school.address ?? '').trim();
             const schoolAddress = escapeHtml(schoolAddressRaw);
             const hasSchoolAddress = Boolean(schoolAddressRaw);
+            const showSchoolWebsiteBlock = toggleSchoolWebsite.checked && hasSchoolWebsite;
+            const showSchoolAddressBlock = toggleSchoolAddress.checked && hasSchoolAddress;
 
             // Ophalen van Social Media velden (alleen geldige HTTPS links)
             const sFb = normalizeHttpsUrl(document.getElementById('socialFacebook').value);
@@ -932,7 +1089,7 @@
             const mainLogoUrl = normalizeHttpsUrl(mainLogoSelect.value) || normalizeHttpsUrl(school.logos[0].url) || '';
             const logoWidth = logoSizeInput.value || 160;
             const mainLogoImgHtml = `<img src="${mainLogoUrl}" alt="Logo ${schoolName}" width="${logoWidth}" style="max-width: ${logoWidth}px; display: block; ${logoMarginStyle} border: none; outline: none; text-decoration: none !important; border-bottom: 0 !important;">`;
-            const mainLogoHtml = hasSchoolWebsite
+            const mainLogoHtml = showSchoolWebsiteBlock
                 ? `<a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; display: inline-block; border: none; outline: none;">${mainLogoImgHtml}</a>`
                 : mainLogoImgHtml;
             
@@ -964,8 +1121,9 @@
 
             let socialHtml = '';
             let socialCenteredHtml = '';
+            const showSocialsBlock = toggleSocials.checked && socialIconsArr.length > 0;
 
-            if (socialIconsArr.length > 0) {
+            if (showSocialsBlock) {
                 const tdString = socialIconsArr.map(s => 
                     `<td style="padding-right: 6px;"><a href="${s.url}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; display: inline-block;"><span style="display: inline-block; background-color: ${activeColor}; border-radius: 4px; line-height: 0;"><img src="${s.icon}" width="24" height="24" alt="${s.alt}" style="display: block; border: 0; outline: none; text-decoration: none !important; border-bottom: 0 !important;"></span></a></td>`
                 ).join('');
@@ -984,9 +1142,11 @@
             }
 
             // Basis HTML strings voor herbruikbare onderdelen
-            const enterpriseHtml = entNum ? `<div style="margin-top: 4px; color: #888888; font-size: 11px; font-family: ${activeFont}; line-height: 14px;">KBO: ${entNum}</div>` : '';
+            const showEnterpriseBlock = toggleEnterprise.checked && Boolean(entNum);
+            const enterpriseHtml = showEnterpriseBlock ? `<div style="margin-top: 4px; color: #888888; font-size: 11px; font-family: ${activeFont}; line-height: 14px;">KBO: ${entNum}</div>` : '';
             
-            const appointmentHtml = apptLink ? `
+            const showAppointmentBlock = toggleAppointment.checked && Boolean(apptLink);
+            const appointmentHtml = showAppointmentBlock ? `
                 <table cellpadding="0" cellspacing="0" border="0" style="margin-top: 12px;">
                     <tr>
                         <td align="center" style="background-color: ${activeColor}; border-radius: 4px; padding: 6px 12px;">
@@ -1009,14 +1169,14 @@
                         return `${labelHtml}<a href="tel:${p.href}" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont};">${p.num}</a>`;
                     }).join('<br>');
                 }
-                const websiteRowT1 = hasSchoolWebsite ? `
+                const websiteRowT1 = showSchoolWebsiteBlock ? `
                         <tr>
                             <td width="24" style="vertical-align: top; padding-top: 2px;">
                                 <table cellpadding="0" cellspacing="0" border="0" role="presentation"><tr><td bgcolor="${activeColor}" style="background-color: ${activeColor}; border-radius: 3px; line-height: 0;"><img src="${icons.website}" width="18" height="18" alt="web" style="display: block; border: 0; outline: none; text-decoration: none !important; border-bottom: 0 !important;"></td></tr></table>
                             </td>
                             <td style="vertical-align: top; padding-bottom: 4px; font-family: ${activeFont};"><a href="${schoolWebsiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont};">${schoolWebsiteLabel}</a></td>
                         </tr>` : '';
-                const addressRowT1 = hasSchoolAddress ? `
+                const addressRowT1 = showSchoolAddressBlock ? `
                         <tr>
                             <td width="24" style="vertical-align: top; padding-top: 2px;">
                                 <table cellpadding="0" cellspacing="0" border="0" role="presentation"><tr><td bgcolor="${activeColor}" style="background-color: ${activeColor}; border-radius: 3px; line-height: 0;"><img src="${icons.address}" width="18" height="18" alt="adres" style="display: block; border: 0; outline: none; text-decoration: none !important; border-bottom: 0 !important;"></td></tr></table>
@@ -1106,7 +1266,7 @@
                     textColor: '#000000',
                     paddingBottom: 2
                 });
-                const websiteRowT2 = hasSchoolWebsite ? buildContactRowWithOptionalIcon({
+                const websiteRowT2 = showSchoolWebsiteBlock ? buildContactRowWithOptionalIcon({
                     showIcon: showLinkContactIcon,
                     iconUrl: icons.website,
                     iconAlt: 'web',
@@ -1177,7 +1337,7 @@
                     activeColor,
                     contentHtml: `<a href="mailto:${mail}" style="color: #000000; text-decoration: none !important; border-bottom: 0 !important; font-family: ${activeFont};">${mail}</a>`
                 });
-                const websiteItemT3 = hasSchoolWebsite ? buildInlineContactItemWithOptionalIcon({
+                const websiteItemT3 = showSchoolWebsiteBlock ? buildInlineContactItemWithOptionalIcon({
                     showIcon: showLinkContactIcon,
                     iconUrl: icons.website,
                     iconAlt: 'web',
@@ -1208,7 +1368,7 @@
         </tr>
         
         <!-- Afspraak knop (Indien ingevuld) -->
-        ${apptLink ? `
+        ${showAppointmentBlock ? `
         <tr>
             <td style="padding-bottom: 12px; font-family: ${activeFont};">
                 <a href="${apptLink}" target="_blank" rel="noopener noreferrer" style="background-color: ${activeColor}; color: #ffffff; padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; text-decoration: none !important; border-bottom: 0 !important; display: inline-block;">${apptText}</a>
@@ -1266,7 +1426,7 @@
                     textColor: '#000000',
                     paddingBottom: 2
                 });
-                const websiteRowT4 = hasSchoolWebsite ? buildContactRowWithOptionalIcon({
+                const websiteRowT4 = showSchoolWebsiteBlock ? buildContactRowWithOptionalIcon({
                     showIcon: showLinkContactIcon,
                     iconUrl: icons.website,
                     iconAlt: 'web',
@@ -1337,7 +1497,7 @@
                     activeColor,
                     contentHtml: `<a href="mailto:${mail}" style="color: #000000; text-decoration: none !important; border-bottom: 0 !important; font-family: ${activeFont};">${mail}</a>`
                 });
-                const websiteItemT5 = hasSchoolWebsite ? buildInlineContactItemWithOptionalIcon({
+                const websiteItemT5 = showSchoolWebsiteBlock ? buildInlineContactItemWithOptionalIcon({
                     showIcon: showLinkContactIcon,
                     iconUrl: icons.website,
                     iconAlt: 'web',
@@ -1349,7 +1509,7 @@
                 if (websiteItemT5) contactItemsT5.push(websiteItemT5);
                 const contactLineT5 = contactItemsT5.join(` <span style="color: ${activeColor}; font-weight: bold; margin: 0 6px;">|</span> `);
 
-                const appointmentHtmlT5 = apptLink ? `
+                const appointmentHtmlT5 = showAppointmentBlock ? `
                     <table cellpadding="0" cellspacing="0" border="0" align="center" style="margin-top: 12px; margin-bottom: 4px;">
                         <tr>
                             <td align="center" style="background-color: ${activeColor}; border-radius: 4px; padding: 6px 16px;">
@@ -1359,7 +1519,7 @@
                     </table>
                 ` : '';
                 
-                const enterpriseHtmlT5 = entNum ? `<div style="margin-top: 8px; color: #888888; font-size: 11px; font-family: ${activeFont}; line-height: 14px; text-align: center;">KBO: ${entNum}</div>` : '';
+                const enterpriseHtmlT5 = showEnterpriseBlock ? `<div style="margin-top: 8px; color: #888888; font-size: 11px; font-family: ${activeFont}; line-height: 14px; text-align: center;">KBO: ${entNum}</div>` : '';
 
                 htmlString = `
 <table cellpadding="0" cellspacing="0" border="0" width="100%" style="font-size: 14px; font-family: ${activeFont}; color: #000000; line-height: 1.4; max-width: 500px; text-align: center;">
@@ -1438,7 +1598,7 @@
                     textColor: '#000000',
                     paddingBottom: 2
                 });
-                const websiteRowT6 = hasSchoolWebsite ? buildContactRowWithOptionalIcon({
+                const websiteRowT6 = showSchoolWebsiteBlock ? buildContactRowWithOptionalIcon({
                     showIcon: showLinkContactIcon,
                     iconUrl: icons.website,
                     iconAlt: 'web',
@@ -1449,7 +1609,7 @@
                     textColor: '#000000',
                     paddingBottom: 2
                 }) : '';
-                const addressRowT6 = hasSchoolAddress ? buildContactRowWithOptionalIcon({
+                const addressRowT6 = showSchoolAddressBlock ? buildContactRowWithOptionalIcon({
                     showIcon: true,
                     iconUrl: icons.address,
                     iconAlt: 'adres',
@@ -1547,6 +1707,7 @@
             populateMainLogos(school); // Laad de basislogo's in
             populateAvatars(school); // Laad de avatars in
             updatePlaceholders(school); 
+            toggleOptionalPanels();
             updateSignature();
         });
 
@@ -1556,6 +1717,20 @@
         templateSelect.addEventListener('change', () => {
             toggleTemplateImageControls();
             updateSignature();
+        });
+
+        optionalPanelConfigs.forEach(({ toggle, card, button }) => {
+            toggle.addEventListener('change', () => {
+                card.dataset.expanded = toggle.checked ? 'true' : 'false';
+                toggleOptionalPanels();
+                updateSignature();
+            });
+
+            button.addEventListener('click', () => {
+                if (!toggle.checked) return;
+                card.dataset.expanded = card.dataset.expanded === 'true' ? 'false' : 'true';
+                toggleOptionalPanels();
+            });
         });
 
         // Reageer op veranderingen in logo/avatar dropdowns en grootte
