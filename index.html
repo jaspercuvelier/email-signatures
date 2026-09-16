@@ -980,13 +980,13 @@
                                     </tr>
                                 </table>
                             </td>
-                            <td style="vertical-align: top; padding-bottom: ${paddingBottom}px; color: ${textColor}; font-family: ${fontFamily};">${contentHtml}</td>
+                            <td align="left" style="vertical-align: top; text-align: left; padding-bottom: ${paddingBottom}px; color: ${textColor}; font-family: ${fontFamily};">${contentHtml}</td>
                         </tr>`;
             }
 
             return `
                         <tr>
-                            <td style="vertical-align: top; padding-bottom: ${paddingBottom}px; color: ${textColor}; font-family: ${fontFamily};">${contentHtml}</td>
+                            <td align="left" style="vertical-align: top; text-align: left; padding-bottom: ${paddingBottom}px; color: ${textColor}; font-family: ${fontFamily};">${contentHtml}</td>
                         </tr>`;
         }
 
@@ -1069,6 +1069,11 @@
             const hasSchoolWebsite = Boolean(schoolWebsiteUrl && schoolWebsiteLabelText);
             const schoolAddressRaw = schoolAddressOverrideInput.value.trim() || String(school.address ?? '').trim();
             const schoolAddress = escapeHtml(schoolAddressRaw);
+            // Gmail herkent adressen en plakt ze samen met tekst uit vorige cellen (bv. "be" van "sgfv.be").
+            // De <a> die Gmail dan invoegt breekt de tabel open, waardoor het adres naar rechts verspringt.
+            // Eigen link + zero-width spaces (voor het adres en na komma's) houden de adresherkenning tegen.
+            const schoolAddressDetectSafe = '&#8203;' + schoolAddress.replace(/,\s*/g, ',&#8203; ');
+            const schoolAddressHtml = `<a href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(schoolAddressRaw)}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont}; white-space: nowrap;">${schoolAddressDetectSafe}</a>`;
             const hasSchoolAddress = Boolean(schoolAddressRaw);
             const showSchoolWebsiteBlock = toggleSchoolWebsite.checked && hasSchoolWebsite;
             const showSchoolAddressBlock = toggleSchoolAddress.checked && hasSchoolAddress;
@@ -1181,7 +1186,7 @@
                             <td width="24" style="vertical-align: top; padding-top: 2px;">
                                 <table cellpadding="0" cellspacing="0" border="0" role="presentation"><tr><td bgcolor="${activeColor}" style="background-color: ${activeColor}; border-radius: 3px; line-height: 0;"><img src="${icons.address}" width="18" height="18" alt="adres" style="display: block; border: 0; outline: none; text-decoration: none !important; border-bottom: 0 !important;"></td></tr></table>
                             </td>
-                            <td style="vertical-align: top; color: #000000; font-family: ${activeFont};">${schoolAddress}</td>
+                            <td align="left" style="vertical-align: top; text-align: left; color: #000000; font-family: ${activeFont};">${schoolAddressHtml}</td>
                         </tr>` : '';
 
                 htmlString = `
@@ -1615,7 +1620,7 @@
                     iconAlt: 'adres',
                     iconSize: 16,
                     activeColor,
-                    contentHtml: schoolAddress,
+                    contentHtml: schoolAddressHtml,
                     fontFamily: activeFont,
                     textColor: '#000000',
                     paddingBottom: 0
