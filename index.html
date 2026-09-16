@@ -1017,6 +1017,16 @@
 </table>`;
         }
 
+        // Gmail herkent adressen over cellen heen (bv. "be" van "sgfv.be" + witruimte + adres) en stopt
+        // de witruimte tussen tabeltags in een eigen <a>. Die belandt buiten de cellen, waardoor de browser
+        // extra cellen aanmaakt en het adres verspringt. Daarom: geen commentaar en geen witruimte tussen tags.
+        function compactEmailHtml(html) {
+            return html
+                .replace(/<!--[\s\S]*?-->/g, '')
+                .replace(/>\s*[\r\n]\s*</g, '><')
+                .trim();
+        }
+
         // --- 3. DE TEMPLATE GENERATOR ---
         function updateSignature() {
             // Haal de gekozen school op
@@ -1069,11 +1079,8 @@
             const hasSchoolWebsite = Boolean(schoolWebsiteUrl && schoolWebsiteLabelText);
             const schoolAddressRaw = schoolAddressOverrideInput.value.trim() || String(school.address ?? '').trim();
             const schoolAddress = escapeHtml(schoolAddressRaw);
-            // Gmail herkent adressen en plakt ze samen met tekst uit vorige cellen (bv. "be" van "sgfv.be").
-            // De <a> die Gmail dan invoegt breekt de tabel open, waardoor het adres naar rechts verspringt.
-            // Eigen link + zero-width spaces (voor het adres en na komma's) houden de adresherkenning tegen.
-            const schoolAddressDetectSafe = '&#8203;' + schoolAddress.replace(/,\s*/g, ',&#8203; ');
-            const schoolAddressHtml = `<a href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(schoolAddressRaw)}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont}; white-space: nowrap;">${schoolAddressDetectSafe}</a>`;
+            // Eigen link, zodat Gmail de adrestekst zelf niet opnieuw linkt
+            const schoolAddressHtml = `<a href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(schoolAddressRaw)}" target="_blank" rel="noopener noreferrer" style="text-decoration: none !important; border-bottom: 0 !important; color: #000000; font-family: ${activeFont}; white-space: nowrap;">${schoolAddress}</a>`;
             const hasSchoolAddress = Boolean(schoolAddressRaw);
             const showSchoolWebsiteBlock = toggleSchoolWebsite.checked && hasSchoolWebsite;
             const showSchoolAddressBlock = toggleSchoolAddress.checked && hasSchoolAddress;
@@ -1687,7 +1694,7 @@
             }
             
             const greetingHtml = buildSignatureGreeting(activeFont);
-            previewContainer.innerHTML = `${greetingHtml}${htmlString}`;
+            previewContainer.innerHTML = compactEmailHtml(`${greetingHtml}${htmlString}`);
         }
 
         // --- 4. EVENT LISTENERS ---
